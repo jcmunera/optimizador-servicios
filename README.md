@@ -1,34 +1,28 @@
 # Optimizador de Servicios
 
-Herramienta portable para Windows 10 que desactiva de forma selectiva y **reversible** los servicios y
-programas que más penalizan el rendimiento en equipos modestos (4 GB de RAM y disco duro mecánico),
-**mide** el efecto antes y después, y permite **desplegar** la configuración en los equipos de una
-empresa, centro educativo u organización.
+Herramienta portable para Windows 10 que mejora el rendimiento de equipos modestos (4 GB de RAM y
+disco duro mecánico) desactivando de forma **reversible** servicios, efectos visuales, ajustes y
+tareas programadas, y que **mide** el efecto antes y después.
+
+> La versión 3 está en desarrollo. La última versión estable es la
+> [2.0](../../releases/tag/v2.0); las versiones preliminares de la 3 están en [Releases](../../releases).
 
 ## Características
 
-- **Servicios:** catálogo de servicios con impacto (alto, medio, bajo) y perfiles: recomendado,
-  conservador, oficina y aulas. Copia de seguridad automática y restablecimiento con un clic.
-- **Programas:** detecta los programas que se inician con Windows (con los retrasos de arranque que
-  registra el propio Windows) y los que más CPU, RAM y disco consumen. Permite desactivarlos del
-  inicio o abrir su desinstalador.
-- **Análisis antes/después:** tiempo de arranque, RAM, CPU, actividad y cola del disco, procesos y
-  servicios. Ciclo guiado: medir, cambiar, reiniciar y volver a medir.
-- **Despliegue:** modo de línea de comandos (`/aplicar`, `/restablecer`, `/estado`, `/perfiles`) para
-  GPO, Intune, SCCM o PDQ, con registro por equipo y códigos de salida.
-- **Portable:** un único `.exe` de unos 70 KB que usa .NET Framework 4, incluido en Windows 10.
+- **Panel:** procesador, memoria y disco (distingue HDD de SSD) con su uso en tiempo real, y
+  recomendaciones según el equipo.
+- **Servicios:** catálogo de servicios con su mejora y su nivel de riesgo (seguro, moderado,
+  arriesgado), perfiles y restablecimiento con un clic.
+- **Efectos y ajustes:** animaciones, transparencias, aplicaciones en segundo plano, Game Bar,
+  plan de energía, hibernación, anuncios y telemetría. Cada ajuste se puede revertir.
+- **Tareas programadas:** desactiva las tareas de telemetría y diagnóstico que despiertan el disco.
+- **Análisis:** tiempo de arranque, RAM, CPU, actividad y cola del disco, antes y después de los
+  cambios, con un ciclo guiado: medir, cambiar, reiniciar y volver a medir.
+- **Interfaz:** estilo Fluent con tema claro u oscuro según Windows.
+- **Portable:** un único `.exe` que usa .NET Framework 4.8, incluido en Windows 10.
 
-## Uso rápido
-
-```bat
-OptimizadorServicios.exe                          :: interfaz gráfica
-OptimizadorServicios.exe /aplicar:oficina         :: aplicar un perfil sin ventanas
-OptimizadorServicios.exe /restablecer             :: revertir todos los cambios
-OptimizadorServicios.exe /estado                  :: inventario del estado actual
-```
-
-El manual completo, con la guía de despliegue por GPO e Intune, está en
-[`docs/manual/manual.html`](docs/manual/manual.html). La versión PDF se genera con el script descrito más abajo.
+Antes de cada cambio se guarda el estado original en `C:\ProgramData\OptimizadorServicios\` y se
+puede crear un punto de restauración. No modifica Windows Update ni Windows Defender.
 
 ## Compilar
 
@@ -36,29 +30,19 @@ No requiere Visual Studio: usa el compilador de C# incluido en .NET Framework 4.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File build.ps1              # genera dist\OptimizadorServicios.exe
-powershell -ExecutionPolicy Bypass -File docs\build-manual.ps1  # genera dist\Manual-Optimizador-Servicios.pdf (usa Edge)
+powershell -ExecutionPolicy Bypass -File docs\build-manual.ps1  # genera el manual en PDF (usa Edge)
 ```
 
 ## Estructura
 
 | Ruta | Contenido |
 |---|---|
-| `src/Optimizador.cs` | Código de la aplicación (WinForms) y del modo de línea de comandos |
-| `src/app.manifest` | Manifiesto: pide permisos de administrador |
-| `despliegue/` | Scripts de ejemplo para GPO/Intune y perfil personalizado |
-| `docs/manual/` | Manual en HTML e imágenes |
-| `Optimizar-Servicios.ps1` | Versión de consola simplificada (PowerShell) |
-
-## Descarga
-
-El ejecutable y el manual en PDF están en la sección
-[Releases](../../releases/latest) del repositorio.
+| `src/Nucleo.cs` | Servicios, copias de seguridad, mediciones y análisis de programas |
+| `src/Ajustes.cs`, `src/Tareas.cs` | Ajustes reversibles y tareas programadas |
+| `src/InfoEquipo.cs` | Información del equipo para el Panel |
+| `src/Ui/` | Interfaz WPF: tema, ventana principal y páginas |
+| `docs/manual/` | Manual en HTML (pendiente de actualizar a la versión 3) |
 
 ## Licencia
 
 [MIT](LICENSE).
-
-## Seguridad
-
-No modifica Windows Update, Windows Defender ni ningún servicio fuera de su catálogo. Cada cambio se
-puede revertir: la copia del estado original se guarda en `C:\ProgramData\OptimizadorServicios\`.
