@@ -49,6 +49,15 @@ powershell -ExecutionPolicy Bypass -File docs\build-manual.ps1  # genera dist\Ma
 | `docs/manual/` | Manual en HTML e imágenes |
 | `Optimizar-Servicios.ps1` | Versión de consola simplificada (PowerShell) |
 
+## Descarga
+
+El ejecutable y el manual en PDF están en la sección
+[Releases](../../releases/latest) del repositorio.
+
+## Licencia
+
+[MIT](LICENSE).
+
 ## Seguridad
 
 No modifica Windows Update, Windows Defender ni ningún servicio fuera de su catálogo. Cada cambio se
