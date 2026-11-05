@@ -1,0 +1,15 @@
+# Perfil personalizado para el Optimizador de Servicios.
+# Uso: OptimizadorServicios.exe /aplicar:\\servidor\software\perfil-personalizado.txt
+# Un servicio por línea. Lo que va detrás de # se ignora.
+# Solo se admiten servicios del catálogo (OptimizadorServicios.exe /perfiles los muestra).
+
+SysMain          # Superfetch: lo que más penaliza en discos HDD
+DiagTrack        # Telemetría
+dmwappushservice
+WerSvc
+RetailDemo
+Fax
+XblAuthManager
+XblGameSave
+XboxNetApiSvc
+XboxGipSvc

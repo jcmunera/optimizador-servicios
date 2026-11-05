@@ -1,0 +1,4 @@
+# Binarios generados: se publican en GitHub Releases
+dist/
+*.exe
+*.pdb
