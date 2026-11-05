@@ -305,6 +305,24 @@ static class Almacen
         File.WriteAllText(EstadoFile, Json.Serialize(e));
     }
 
+    // Lectura y escritura genérica de los demás archivos de datos (ajustes, tareas...).
+    public static T LeerJson<T>(string archivo) where T : class, new()
+    {
+        try
+        {
+            string ruta = Path.Combine(Dir, archivo);
+            if (File.Exists(ruta)) return Json.Deserialize<T>(File.ReadAllText(ruta)) ?? new T();
+        }
+        catch { }
+        return new T();
+    }
+
+    public static void GuardarJson(string archivo, object datos)
+    {
+        Directory.CreateDirectory(Dir);
+        File.WriteAllText(Path.Combine(Dir, archivo), Json.Serialize(datos));
+    }
+
     public static void Log(string texto)
     {
         try

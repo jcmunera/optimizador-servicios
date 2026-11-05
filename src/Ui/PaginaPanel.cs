@@ -146,6 +146,11 @@ class PaginaPanel : UserControl
         if (info.EsHdd)
             Recomendacion("Amarillo", "", "Disco mecánico (HDD). SysMain y Windows Search son los servicios que más lo penalizan.",
                           "Ir a Servicios", () => v.Ir("servicios"));
+        int sinAplicar = Ajustes.Todos.Count(a => a.Recomendado && !a.Aplicado());
+        if (sinAplicar > 0)
+            Recomendacion("Azul", "", (sinAplicar == 1 ? "1 ajuste recomendado" : sinAplicar + " ajustes recomendados") +
+                          " sin aplicar (efectos visuales, rendimiento o anuncios).",
+                          "Ir a Efectos y ajustes", () => v.Ir("ajustes"));
         if (info.DiscoLibrePct < 15)
             Recomendacion("Rojo", "", "Poco espacio libre en " + info.Unidad + " (" + info.DiscoLibreGB.ToString("F1") +
                           " GB). Windows se ralentiza con menos de un 15 % libre.", null, null);

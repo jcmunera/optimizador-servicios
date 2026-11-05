@@ -14,7 +14,7 @@ if (-not $Salida) {
 }
 
 $refs = 'System.dll', 'System.Core.dll', 'System.Xaml.dll', 'System.Management.dll', 'System.ServiceProcess.dll',
-        'System.Web.Extensions.dll', 'WPF\PresentationCore.dll', 'WPF\PresentationFramework.dll', 'WPF\WindowsBase.dll' |
+        'System.Web.Extensions.dll', 'Microsoft.CSharp.dll', 'WPF\PresentationCore.dll', 'WPF\PresentationFramework.dll', 'WPF\WindowsBase.dll' |
         ForEach-Object { "/reference:$(Join-Path $fw $_)" }
 $fuentes = Get-ChildItem (Join-Path $root 'src') -Recurse -Filter *.cs | ForEach-Object { $_.FullName }
 
