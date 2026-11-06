@@ -119,7 +119,7 @@ class PaginaLimpieza : UserControl
         try
         {
             var unidad = new DriveInfo(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.Windows)));
-            txtLibre.Text = "Libre ahora en " + unidad.Name.TrimEnd('\\') + ": " + Limpieza.Formato(unidad.AvailableFreeSpace) +
+            txtLibre.Text = "Libre ahora en " + unidad.Name.TrimEnd('\\') + " " + Limpieza.Formato(unidad.AvailableFreeSpace) +
                             " de " + Limpieza.Formato(unidad.TotalSize);
         }
         catch { }
