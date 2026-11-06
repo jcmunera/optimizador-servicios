@@ -1,4 +1,4 @@
-// Optimizador de Servicios - punto de entrada.
+﻿// Optimizador de Servicios - punto de entrada.
 // Sin parámetros abre la interfaz gráfica (WPF); con parámetros, el modo de línea de comandos.
 using System;
 using System.Reflection;
@@ -7,8 +7,8 @@ using System.Windows;
 [assembly: AssemblyTitle("Optimizador de Servicios")]
 [assembly: AssemblyDescription("Optimizador para Windows 10 en equipos modestos")]
 [assembly: AssemblyProduct("Optimizador de Servicios")]
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.0.0")]
+[assembly: AssemblyVersion("3.1.0.0")]
+[assembly: AssemblyFileVersion("3.1.0.0")]
 
 static class Program
 {

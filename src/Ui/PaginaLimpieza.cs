@@ -1,4 +1,4 @@
-// Página Limpieza de disco: analiza cuánto ocupa cada categoría y borra las marcadas.
+﻿// Página Limpieza de disco: analiza cuánto ocupa cada categoría y borra las marcadas.
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +17,7 @@ class PaginaLimpieza : UserControl
     readonly TextBlock txtTotal = Ui.Texto("—", "Cifra");
     readonly TextBlock txtLibre = Ui.Texto("", "Secundario");
     readonly Button btnLimpiar, btnAnalizar;
+    readonly TextBlock txtSeleccion = Ui.Texto("", "Secundario");
     bool analizado;
 
     public PaginaLimpieza(VentanaPrincipal ventana)
@@ -24,13 +25,7 @@ class PaginaLimpieza : UserControl
         v = ventana;
         btnAnalizar = Ui.Boton("Analizar de nuevo", async (s, e) => await Analizar(), false, "");
         btnLimpiar = Ui.Boton("Limpiar seleccionadas", async (s, e) => await Limpiar(), true, "");
-        btnLimpiar.Margin = new Thickness(0);
-        var botones = Ui.Fila(btnAnalizar, btnLimpiar);
-        botones.VerticalAlignment = VerticalAlignment.Center;
-
         var resumen = new DockPanel();
-        DockPanel.SetDock(botones, Dock.Right);
-        resumen.Children.Add(botones);
         resumen.Children.Add(Ui.Columna(Ui.Texto("Espacio que se puede liberar", "Secundario"), txtTotal, txtLibre));
 
         foreach (CategoriaLimpieza c in Limpieza.Todas) lista.Children.Add(Fila(c));
@@ -44,11 +39,11 @@ class PaginaLimpieza : UserControl
         liberador.Margin = new Thickness(0, 10, 0, 0);
         liberador.HorizontalAlignment = HorizontalAlignment.Left;
 
-        Content = Ui.Pagina(Ui.Columna(
+        Content = Ui.PaginaConPie(Ui.Columna(
             Ui.Cabecera("Limpieza de disco", "Libera espacio borrando archivos que Windows y los programas ya no necesitan."),
             Ui.Tarjeta(resumen),
             lista,
-            Ui.Margen(Ui.Tarjeta(Ui.Columna(nota, liberador), 0), 0, 6, 0, 0)));
+            Ui.Margen(Ui.Tarjeta(Ui.Columna(nota, liberador), 0), 0, 6, 0, 0)), txtSeleccion, btnAnalizar, btnLimpiar);
 
         IsVisibleChanged += async (s, e) => { if ((bool)e.NewValue && !analizado) await Analizar(); };
     }
@@ -115,6 +110,9 @@ class PaginaLimpieza : UserControl
         long total = Limpieza.Todas.Where(c => casillas[c.Id].IsChecked == true && tamanos.ContainsKey(c.Id) && tamanos[c.Id] > 0)
                                    .Sum(c => tamanos[c.Id]);
         txtTotal.Text = tamanos.Count == 0 ? "—" : Limpieza.Formato(total);
+        int marcadas = casillas.Values.Count(c => c.IsChecked == true);
+        txtSeleccion.Text = (marcadas == 1 ? "1 categoría marcada" : marcadas + " categorías marcadas") +
+                            (tamanos.Count == 0 ? "" : "  ·  " + Limpieza.Formato(total) + " a liberar");
         btnLimpiar.IsEnabled = casillas.Values.Any(c => c.IsChecked == true) && tamanos.Count > 0;
         try
         {

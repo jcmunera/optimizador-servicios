@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 class VentanaPrincipal : Window
 {
-    public const string Version = "3.0";
+    public const string Version = "3.1";
 
     readonly ContentControl contenido = new ContentControl();
     readonly StackPanel menu = new StackPanel();

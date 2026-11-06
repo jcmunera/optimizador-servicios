@@ -1,4 +1,4 @@
-// Página Tareas programadas: tareas de telemetría y diagnóstico que despiertan el disco.
+﻿// Página Tareas programadas: tareas de telemetría y diagnóstico que despiertan el disco.
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,27 +13,24 @@ class PaginaTareas : UserControl
     readonly StackPanel lista = new StackPanel();
     readonly Dictionary<string, CheckBox> casillas = new Dictionary<string, CheckBox>();
     readonly Button btnDesactivar, btnRestablecer;
+    readonly TextBlock txtMarcadas = Ui.Texto("", "Secundario");
 
     public PaginaTareas(VentanaPrincipal ventana)
     {
         v = ventana;
         btnDesactivar = Ui.Boton("Desactivar marcadas", async (s, e) => await Desactivar(), true, "");
         btnRestablecer = Ui.Boton("Restablecer todo", async (s, e) => await Restablecer(), false, "");
-        btnRestablecer.Margin = new Thickness(0);
         var acciones = new DockPanel();
-        var derecha = Ui.Fila(btnDesactivar, btnRestablecer);
-        DockPanel.SetDock(derecha, Dock.Right);
-        acciones.Children.Add(derecha);
         acciones.Children.Add(Ui.Fila(Ui.Boton("Marcar recomendadas", (s, e) => Marcar(true), false, ""),
                                       Ui.Boton("Desmarcar", (s, e) => Marcar(false))));
 
         var nota = Ui.Texto("La desfragmentación programada (Defrag) no se toca: en un disco duro mecánico es necesaria.", "Secundario");
         nota.Margin = new Thickness(0, 12, 0, 0);
 
-        Content = Ui.Pagina(Ui.Columna(
+        Content = Ui.PaginaConPie(Ui.Columna(
             Ui.Cabecera("Tareas programadas", "Tareas de telemetría y diagnóstico que despiertan el disco aunque su servicio esté parado."),
             Ui.Tarjeta(Ui.Columna(acciones, nota)),
-            lista));
+            lista), txtMarcadas, btnRestablecer, btnDesactivar);
 
         IsVisibleChanged += (s, e) => { if ((bool)e.NewValue) Refrescar(); };
     }
@@ -117,6 +114,7 @@ class PaginaTareas : UserControl
         btnDesactivar.IsEnabled = n > 0;
         var p = btnDesactivar.Content as StackPanel;
         if (p != null) ((TextBlock)p.Children[1]).Text = n > 0 ? "Desactivar marcadas (" + n + ")" : "Desactivar marcadas";
+        txtMarcadas.Text = n == 0 ? "Ninguna tarea marcada" : n == 1 ? "1 tarea marcada" : n + " tareas marcadas";
     }
 
     void Marcar(bool recomendadas)

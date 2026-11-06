@@ -1,4 +1,4 @@
-// Piezas reutilizables de la interfaz: textos, tarjetas, distintivos, botones y el
+﻿// Piezas reutilizables de la interfaz: textos, tarjetas, distintivos, botones y el
 // cuadro de diálogo con el estilo de la aplicación.
 using System;
 using System.Windows;
@@ -102,6 +102,37 @@ static class Ui
     {
         e.Margin = new Thickness(izq, arr, der, aba);
         return e;
+    }
+
+    // Página desplazable con una barra de acciones fija abajo, siempre visible aunque la lista sea larga.
+    // La barra muestra un resumen a la izquierda y los botones a la derecha.
+    public static DockPanel PaginaConPie(UIElement contenido, UIElement resumen, params Button[] botones)
+    {
+        var derecha = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        for (int i = 0; i < botones.Length; i++)
+        {
+            botones[i].Margin = new Thickness(i == 0 ? 0 : 8, 0, 0, 0);
+            derecha.Children.Add(botones[i]);
+        }
+        var pie = new DockPanel();
+        DockPanel.SetDock(derecha, Dock.Right);
+        pie.Children.Add(derecha);
+        if (resumen != null)
+        {
+            var fe = resumen as FrameworkElement;
+            if (fe != null) fe.VerticalAlignment = VerticalAlignment.Center;
+            pie.Children.Add(resumen);
+        }
+        var barra = new Border
+        {
+            Background = B("Tarjeta"), BorderBrush = B("Borde"), BorderThickness = new Thickness(0, 1, 0, 0),
+            Padding = new Thickness(32, 12, 32, 12), Child = pie
+        };
+        var d = new DockPanel();
+        DockPanel.SetDock(barra, Dock.Bottom);
+        d.Children.Add(barra);
+        d.Children.Add(Pagina(contenido));
+        return d;
     }
 
     // Página desplazable con un margen común.

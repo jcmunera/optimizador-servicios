@@ -1,4 +1,4 @@
-// Tema visual (estilo Fluent): colores claro/oscuro según Windows y estilos de los controles.
+﻿// Tema visual (estilo Fluent): colores claro/oscuro según Windows y estilos de los controles.
 // Los estilos se escriben en XAML y se cargan en tiempo de ejecución, así el proyecto se
 // sigue compilando solo con csc.exe, sin MSBuild.
 using System.Collections.Generic;
@@ -19,6 +19,7 @@ static class Tema
         { "VerdeTexto", "#0F7B0F" }, { "VerdeFondo", "#DFF6DD" },
         { "AmarilloTexto", "#8A5300" }, { "AmarilloFondo", "#FFF4CE" },
         { "RojoTexto", "#C42B1C" }, { "RojoFondo", "#FDE7E9" },
+        { "NaranjaTexto", "#B34700" }, { "NaranjaFondo", "#FFE9D6" },
         { "AzulTexto", "#005FB8" }, { "AzulFondo", "#E0EEF9" },
         { "GrisTexto", "#5F5F5F" }, { "GrisFondo", "#EBEBEB" },
     };
@@ -32,6 +33,7 @@ static class Tema
         { "VerdeTexto", "#6CCB5F" }, { "VerdeFondo", "#1F3A1C" },
         { "AmarilloTexto", "#FCE100" }, { "AmarilloFondo", "#433519" },
         { "RojoTexto", "#FF99A4" }, { "RojoFondo", "#442726" },
+        { "NaranjaTexto", "#FFB27A" }, { "NaranjaFondo", "#4A3020" },
         { "AzulTexto", "#60CDFF" }, { "AzulFondo", "#1E3A4C" },
         { "GrisTexto", "#C5C5C5" }, { "GrisFondo", "#3A3A3A" },
     };
@@ -78,6 +80,8 @@ static class Tema
   <SolidColorBrush x:Key='AmarilloFondo' Color='@AmarilloFondo@'/>
   <SolidColorBrush x:Key='RojoTexto' Color='@RojoTexto@'/>
   <SolidColorBrush x:Key='RojoFondo' Color='@RojoFondo@'/>
+  <SolidColorBrush x:Key='NaranjaTexto' Color='@NaranjaTexto@'/>
+  <SolidColorBrush x:Key='NaranjaFondo' Color='@NaranjaFondo@'/>
   <SolidColorBrush x:Key='AzulTexto' Color='@AzulTexto@'/>
   <SolidColorBrush x:Key='AzulFondo' Color='@AzulFondo@'/>
   <SolidColorBrush x:Key='GrisTexto' Color='@GrisTexto@'/>

@@ -74,7 +74,7 @@
   .indice ol ol li { margin: 0.6mm 0; }
   .chip { display: inline-block; padding: 0 8px; border-radius: 10px; font-weight: 600; font-size: 8.5pt; }
   .chip.verde { background: #DFF6DD; color: #0F7B0F; } .chip.amarillo { background: #FFF4CE; color: #8A5300; }
-  .chip.rojo { background: #FDE7E9; color: #C42B1C; } .chip.gris { background: #EBEBEB; color: #5F5F5F; }
+  .chip.rojo { background: #FDE7E9; color: #C42B1C; } .chip.naranja { background: #FFE9D6; color: #B34700; } .chip.gris { background: #EBEBEB; color: #5F5F5F; }
 </style>
 
 </head>
@@ -93,7 +93,7 @@
     el efecto de los cambios antes y después.</p>
   </div>
   <div class="datos">
-    Versión del programa: 3.0<br>
+    Versión del programa: 3.1<br>
     Fecha del documento: noviembre de 2026<br>
     Archivo: <code>OptimizadorServicios.exe</code>
   </div>
@@ -228,6 +228,7 @@ optimizador. Por eso siempre piden una confirmación adicional.</div>
   <li><b>Barra de estado:</b> en la parte inferior muestra la última acción y, durante las mediciones y análisis, una barra de progreso.</li>
   <li><b>Avisos:</b> antes de cualquier cambio aparece un cuadro de confirmación con la lista de lo que se va a hacer y, si procede, una advertencia.</li>
   <li><b>Filas:</b> en las listas se puede pulsar en cualquier parte de una fila para marcarla o desmarcarla.</li>
+  <li><b>Barra de acciones:</b> en las páginas con listas, los botones para aplicar los cambios están en una barra fija en la parte inferior, junto con un resumen de lo marcado, para no tener que volver arriba.</li>
 </ul>
 
 <!-- ======================================================================= -->
@@ -254,7 +255,9 @@ optimizador. Por eso siempre piden una confirmación adicional.</div>
   <li>Deja activado <b>Crear punto de restauración</b> (Windows solo crea uno cada 24 horas).</li>
   <li>Pulsa <b>Desactivar marcados</b>, confirma y reinicia cuando el programa lo proponga.</li>
 </ol>
-<p>Cada fila muestra el tipo de inicio y si el servicio está en ejecución. Los ya deshabilitados no se pueden marcar.
+<p>Cada fila muestra el tipo de inicio y si el servicio está en ejecución. Los servicios <b>en ejecución</b> se resaltan con
+fondo <span class="chip rojo">rojo</span> si su mejora es alta y <span class="chip naranja">naranja</span> si es media o baja: son los que
+están consumiendo recursos en ese momento. Los ya deshabilitados no se pueden marcar.
 Si un servicio no se detiene a tiempo (le ocurre a veces a SysMain en discos lentos), queda deshabilitado y se detiene al reiniciar.</p>
 
 <h3>Perfiles</h3>

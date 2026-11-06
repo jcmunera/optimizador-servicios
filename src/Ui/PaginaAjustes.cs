@@ -1,4 +1,4 @@
-// Página Efectos y ajustes: interruptores reversibles para efectos visuales, rendimiento y privacidad.
+﻿// Página Efectos y ajustes: interruptores reversibles para efectos visuales, rendimiento y privacidad.
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,20 +21,13 @@ class PaginaAjustes : UserControl
         v = ventana;
         btnAplicar = Ui.Boton("Aplicar cambios", async (s, e) => await Aplicar(), true, "");
         btnRestablecer = Ui.Boton("Restablecer todo", async (s, e) => await RestablecerTodo(), false, "");
-        btnRestablecer.Margin = new Thickness(0);
-        var acciones = new DockPanel();
-        var derecha = Ui.Fila(btnAplicar, btnRestablecer);
-        DockPanel.SetDock(derecha, Dock.Right);
-        acciones.Children.Add(derecha);
-        txtPendientes.VerticalAlignment = VerticalAlignment.Center;
-        txtPendientes.Margin = new Thickness(12, 0, 0, 0);
-        acciones.Children.Add(Ui.Fila(Ui.Boton("Activar recomendados", (s, e) => ActivarRecomendados(), false, ""),
-                                      Ui.Boton("Deshacer selección", (s, e) => Refrescar()), txtPendientes));
+        var acciones = Ui.Fila(Ui.Boton("Activar recomendados", (s, e) => ActivarRecomendados(), false, ""),
+                               Ui.Boton("Deshacer selección", (s, e) => Refrescar()));
 
-        Content = Ui.Pagina(Ui.Columna(
+        Content = Ui.PaginaConPie(Ui.Columna(
             Ui.Cabecera("Efectos y ajustes", "Activa un interruptor para aplicar el ajuste y pulsa «Aplicar cambios». Todos se pueden revertir."),
             Ui.Tarjeta(acciones),
-            lista));
+            lista), txtPendientes, btnRestablecer, btnAplicar);
 
         IsVisibleChanged += (s, e) => { if ((bool)e.NewValue) Refrescar(); };
     }
@@ -125,7 +118,7 @@ class PaginaAjustes : UserControl
         List<Ajuste> revertir;
         int n = Pendientes(out revertir).Count + revertir.Count;
         btnAplicar.IsEnabled = n > 0;
-        txtPendientes.Text = n == 0 ? "" : n == 1 ? "1 cambio pendiente" : n + " cambios pendientes";
+        txtPendientes.Text = n == 0 ? "Sin cambios pendientes" : n == 1 ? "1 cambio pendiente" : n + " cambios pendientes";
     }
 
     void ActivarRecomendados()

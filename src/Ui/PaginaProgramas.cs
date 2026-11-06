@@ -26,6 +26,8 @@ class PaginaProgramas : UserControl
     readonly Dictionary<EntradaInicio, CheckBox> interruptores = new Dictionary<EntradaInicio, CheckBox>();
     readonly Dictionary<AppTienda, CheckBox> casillasApps = new Dictionary<AppTienda, CheckBox>();
     readonly Dictionary<string, RadioButton> selectores = new Dictionary<string, RadioButton>();
+    readonly Button btnAplicarInicio, btnAnalizar, btnEliminar;
+    readonly TextBlock txtPie = Ui.Texto("", "Secundario");
 
     public PaginaProgramas(VentanaPrincipal ventana)
     {
@@ -45,9 +47,13 @@ class PaginaProgramas : UserControl
         ((Button)paneles.Children[1]).Margin = new Thickness(0);
         paneles.Margin = new Thickness(0, 0, 0, 14);
 
-        Content = Ui.Pagina(Ui.Columna(
+        btnAplicarInicio = Ui.Boton("Aplicar cambios", async (s, e) => await AplicarInicio(), true, "");
+        btnAnalizar = Ui.Boton("Analizar (" + SegundosConsumo + " s)", async (s, e) => await AnalizarConsumo(), true, "");
+        btnEliminar = Ui.Boton("Eliminar marcadas", async (s, e) => await EliminarApps(), true, "");
+
+        Content = Ui.PaginaConPie(Ui.Columna(
             Ui.Cabecera("Programas", "Programas que ralentizan el arranque o consumen recursos, y aplicaciones preinstaladas que no se usan."),
-            selector, paneles, barra, cuerpo));
+            selector, paneles, barra, cuerpo), txtPie, btnAplicarInicio, btnAnalizar, btnEliminar);
 
         IsVisibleChanged += (s, e) => { if ((bool)e.NewValue) Mostrar(); };
     }
@@ -87,14 +93,10 @@ class PaginaProgramas : UserControl
 
     async void MostrarInicio()
     {
-        var btnAplicar = Ui.Boton("Aplicar cambios", async (s, e) => await AplicarInicio(), true, "");
-        btnAplicar.IsEnabled = false;
-        var acciones = new DockPanel();
-        DockPanel.SetDock(btnAplicar, Dock.Right);
-        acciones.Children.Add(btnAplicar);
-        acciones.Children.Add(Ui.Texto("Desactiva los que no necesites al encender el equipo: no se desinstalan y puedes volver a activarlos aquí o en el Administrador de tareas.", "Secundario"));
-        ((TextBlock)acciones.Children[1]).VerticalAlignment = VerticalAlignment.Center;
-        barra.Children.Add(Ui.Tarjeta(acciones));
+        Pie(btnAplicarInicio);
+        btnAplicarInicio.IsEnabled = false;
+        var txtInicio = Ui.Texto("Desactiva los que no necesites al encender el equipo: no se desinstalan y puedes volver a activarlos aquí o en el Administrador de tareas.", "Secundario");
+        barra.Children.Add(Ui.Tarjeta(txtInicio));
 
         if (inicio == null)
         {
@@ -111,8 +113,8 @@ class PaginaProgramas : UserControl
         {
             var interruptor = new CheckBox { Style = Ui.S("Interruptor"), IsChecked = e.Habilitada, IsEnabled = e.Conmutable, VerticalAlignment = VerticalAlignment.Center };
             interruptor.ToolTip = e.Conmutable ? "Activado = se inicia con Windows" : "Se lanza desde otro origen: no se puede desactivar desde aquí";
-            interruptor.Checked += (s, a) => btnAplicar.IsEnabled = PendientesInicio().Count > 0;
-            interruptor.Unchecked += (s, a) => btnAplicar.IsEnabled = PendientesInicio().Count > 0;
+            interruptor.Checked += (s, a) => ActualizarInicio();
+            interruptor.Unchecked += (s, a) => ActualizarInicio();
             interruptores[e] = interruptor;
 
             var chips = Ui.Fila(e.Retrasos > 0
@@ -128,6 +130,7 @@ class PaginaProgramas : UserControl
 
             cuerpo.Children.Add(FilaPrograma(Ui.Columna(Ui.Texto(e.Nombre, "Fuerte"), detalle, chips), e.Programa, e.Exe, interruptor));
         }
+        ActualizarInicio();
     }
 
     List<EntradaInicio> PendientesInicio()
@@ -165,15 +168,12 @@ class PaginaProgramas : UserControl
 
     void MostrarConsumo()
     {
+        Pie(btnAnalizar);
+        txtPie.Text = consumo == null ? "Sin analizar" : consumo.Count + " programas analizados, " + consumo.Count(c => c.Alto) + " con consumo alto";
         var acciones = new DockPanel();
-        var btnAnalizar = Ui.Boton("Analizar (" + SegundosConsumo + " s)", async (s, e) => await AnalizarConsumo(), true, "");
-        btnAnalizar.Margin = new Thickness(0);
-        DockPanel.SetDock(btnAnalizar, Dock.Right);
-        acciones.Children.Add(btnAnalizar);
         var txt = Ui.Texto("Mide CPU, memoria y disco de cada programa de terceros mientras usas el equipo con normalidad. " +
                            "Se destaca si supera el 5 % de CPU, 300 MB de RAM o 1 MB/s de disco.", "Secundario");
         txt.VerticalAlignment = VerticalAlignment.Center;
-        txt.Margin = new Thickness(0, 0, 16, 0);
         acciones.Children.Add(txt);
         barra.Children.Add(Ui.Tarjeta(acciones));
 
@@ -278,12 +278,9 @@ class PaginaProgramas : UserControl
 
     async void MostrarApps()
     {
-        var btnEliminar = Ui.Boton("Eliminar marcadas", async (s, e) => await EliminarApps(), true, "");
-        btnEliminar.Margin = new Thickness(0);
+        Pie(btnEliminar);
         btnEliminar.IsEnabled = false;
         var acciones = new DockPanel();
-        DockPanel.SetDock(btnEliminar, Dock.Right);
-        acciones.Children.Add(btnEliminar);
         acciones.Children.Add(Ui.Fila(Ui.Boton("Marcar seguras", (s, e) => MarcarApps(true), false, ""), Ui.Boton("Desmarcar", (s, e) => MarcarApps(false))));
         var nota = Ui.Texto("Se eliminan para tu usuario y se pueden volver a instalar desde Microsoft Store. " +
                             "No se muestran las aplicaciones del sistema ni las imprescindibles (Tienda, Seguridad de Windows, extensiones...).", "Secundario");
@@ -303,8 +300,8 @@ class PaginaProgramas : UserControl
         foreach (AppTienda a in apps)
         {
             var casilla = new CheckBox { VerticalAlignment = VerticalAlignment.Center };
-            casilla.Checked += (s, e) => ActualizarEliminar(btnEliminar);
-            casilla.Unchecked += (s, e) => ActualizarEliminar(btnEliminar);
+            casilla.Checked += (s, e) => ActualizarEliminar();
+            casilla.Unchecked += (s, e) => ActualizarEliminar();
             casillasApps[a] = casilla;
 
             string tono = a.Seguridad == "Seguro" ? "Verde" : a.Seguridad == "Moderado" ? "Amarillo" : "Gris";
@@ -328,13 +325,29 @@ class PaginaProgramas : UserControl
             tarjeta.MouseLeftButtonUp += (s, e) => casilla.IsChecked = casilla.IsChecked != true;
             cuerpo.Children.Add(tarjeta);
         }
+        ActualizarEliminar();
     }
 
-    void ActualizarEliminar(Button b)
+    void ActualizarEliminar()
     {
         int n = casillasApps.Values.Count(c => c.IsChecked == true);
-        b.IsEnabled = n > 0;
-        ((TextBlock)((StackPanel)b.Content).Children[1]).Text = n > 0 ? "Eliminar marcadas (" + n + ")" : "Eliminar marcadas";
+        btnEliminar.IsEnabled = n > 0;
+        ((TextBlock)((StackPanel)btnEliminar.Content).Children[1]).Text = n > 0 ? "Eliminar marcadas (" + n + ")" : "Eliminar marcadas";
+        txtPie.Text = n == 0 ? "Ninguna aplicación marcada" : n == 1 ? "1 aplicación marcada" : n + " aplicaciones marcadas";
+    }
+
+    void ActualizarInicio()
+    {
+        int n = PendientesInicio().Count;
+        btnAplicarInicio.IsEnabled = n > 0;
+        txtPie.Text = n == 0 ? "Sin cambios pendientes" : n == 1 ? "1 cambio pendiente" : n + " cambios pendientes";
+    }
+
+    // La barra fija de abajo muestra el botón principal de la sección visible.
+    void Pie(Button b)
+    {
+        foreach (Button x in new[] { btnAplicarInicio, btnAnalizar, btnEliminar }) x.Visibility = x == b ? Visibility.Visible : Visibility.Collapsed;
+        txtPie.Text = "";
     }
 
     void MarcarApps(bool seguras)

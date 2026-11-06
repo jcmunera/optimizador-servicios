@@ -6,7 +6,8 @@ tareas programadas, y que **mide** el efecto antes y después.
 
 ## Descarga
 
-El ejecutable y el manual en PDF están en la última versión de [Releases](../../releases/latest).
+El ejecutable y el manual en PDF están en la última versión de [Releases](../../releases/latest)
+y también en la carpeta [`dist`](dist) del repositorio.
 
 ## Características
 
@@ -46,6 +47,7 @@ powershell -ExecutionPolicy Bypass -File docs\build-manual.ps1  # genera el manu
 | `src/AppsTienda.cs`, `src/Limpieza.cs` | Apps de la Tienda y limpieza de disco |
 | `src/InfoEquipo.cs` | Información del equipo para el Panel |
 | `src/Ui/` | Interfaz WPF: tema, ventana principal y páginas |
+| `dist/` | Ejecutable compilado y manual en PDF |
 | `docs/manual/` | Manual en HTML e imágenes (el PDF se genera con `docs\build-manual.ps1`) |
 
 ## Licencia

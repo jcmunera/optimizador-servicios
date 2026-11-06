@@ -1,4 +1,2 @@
-# Binarios generados: se publican en GitHub Releases
-dist/
-*.exe
+# Archivos temporales de compilación
 *.pdb

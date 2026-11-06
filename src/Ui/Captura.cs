@@ -1,4 +1,4 @@
-// Solo para desarrollo: genera capturas PNG de las páginas para revisar el diseño.
+﻿// Solo para desarrollo: genera capturas PNG de las páginas para revisar el diseño.
 // Se compila únicamente con build.ps1 -Captura (define CAPTURA, sin manifiesto de administrador).
 // Uso: OPTIMIZADOR_CAPTURA=<carpeta> [OPTIMIZADOR_TEMA=claro|oscuro] [OPTIMIZADOR_PASOS=panel,programas:apps,...]
 #if CAPTURA
@@ -39,7 +39,9 @@ static class Captura
         await Task.Delay(2500);
         foreach (string paso in pasos.Split(','))
         {
-            string[] partes = paso.Split(':');
+            // "pagina@fin" desplaza la página hasta el final antes de capturar.
+            bool alFinal = paso.EndsWith("@fin");
+            string[] partes = paso.Replace("@fin", "").Split(':');
             w.Ir(partes[0]);
             await Task.Delay(1500);
             if (partes.Length > 1)
@@ -49,9 +51,21 @@ static class Captura
                 if (partes[1] == "consumo") await p.Analizar();
             }
             await Task.Delay(4000);
-            Guardar(w, Path.Combine(Carpeta, tema + "-" + paso.Replace(':', '-') + ".png"));
+            if (alFinal) foreach (var sv in Descendientes<System.Windows.Controls.ScrollViewer>(w)) sv.ScrollToEnd();
+            await Task.Delay(500);
+            Guardar(w, Path.Combine(Carpeta, tema + "-" + paso.Replace(':', '-').Replace("@", "-") + ".png"));
         }
         Application.Current.Shutdown();
+    }
+
+    static System.Collections.Generic.IEnumerable<T> Descendientes<T>(DependencyObject raiz) where T : DependencyObject
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(raiz); i++)
+        {
+            DependencyObject h = VisualTreeHelper.GetChild(raiz, i);
+            if (h is T) yield return (T)h;
+            foreach (T d in Descendientes<T>(h)) yield return d;
+        }
     }
 
     static void Guardar(VentanaPrincipal w, string archivo)

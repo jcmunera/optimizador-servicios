@@ -1,4 +1,4 @@
-// Página Servicios: catálogo con mejora, nivel de riesgo y estado; desactivar y restablecer.
+﻿// Página Servicios: catálogo con mejora, nivel de riesgo y estado; desactivar y restablecer.
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,7 @@ class PaginaServicios : UserControl
     readonly StackPanel lista = new StackPanel();
     readonly CheckBox chkPunto = new CheckBox { Content = "Crear punto de restauración", IsChecked = true };
     readonly Button btnAplicar, btnRestablecer;
+    readonly TextBlock txtMarcados = Ui.Texto("", "Secundario");
     Perfil perfil = Perfiles.Todos[0];
 
     public PaginaServicios(VentanaPrincipal ventana)
@@ -38,17 +39,19 @@ class PaginaServicios : UserControl
 
         btnAplicar = Ui.Boton("Desactivar marcados", async (s, e) => await Aplicar(), true, "");
         btnRestablecer = Ui.Boton("Restablecer todo", async (s, e) => await Restablecer(), false, "");
-        btnRestablecer.Margin = new Thickness(0);
-        var acciones = new DockPanel();
-        var derecha = Ui.Fila(btnAplicar, btnRestablecer);
-        DockPanel.SetDock(derecha, Dock.Right);
-        acciones.Children.Add(derecha);
-        acciones.Children.Add(Ui.Fila(marcar, desmarcar, Ui.Margen(chkPunto, 8, 0, 0, 0)));
+        var acciones = Ui.Fila(marcar, desmarcar, Ui.Margen(chkPunto, 8, 0, 0, 0));
 
-        Content = Ui.Pagina(Ui.Columna(
+        // Leyenda de los fondos de las tarjetas.
+        var leyenda = Ui.Fila(Ui.Margen(Ui.Texto("En ejecución:", "Secundario"), 0, 0, 10, 0),
+                              Ui.Chip("mejora alta", "Rojo"), Ui.Chip("mejora media o baja", "Naranja"));
+        ((TextBlock)leyenda.Children[0]).VerticalAlignment = VerticalAlignment.Center;
+        leyenda.Margin = new Thickness(0, 14, 0, 0);
+
+        // Los botones de aplicar están en una barra fija abajo, siempre visible.
+        Content = Ui.PaginaConPie(Ui.Columna(
             Ui.Cabecera("Servicios", "Desactiva los servicios que más penalizan el rendimiento. Todos los cambios se pueden restablecer."),
-            Ui.Tarjeta(Ui.Columna(filaPerfil, acciones)),
-            lista));
+            Ui.Tarjeta(Ui.Columna(filaPerfil, acciones, leyenda)),
+            lista), txtMarcados, btnRestablecer, btnAplicar);
 
         IsVisibleChanged += (s, e) => { if ((bool)e.NewValue) Refrescar(); };
     }
@@ -132,6 +135,14 @@ class PaginaServicios : UserControl
         g.Children.Add(estado);
 
         var tarjeta = new Border { Style = Ui.S("EstiloTarjeta"), Padding = new Thickness(16, 12, 16, 12), Margin = new Thickness(0, 0, 0, 6), Child = g };
+        // Un servicio activo y en ejecución se resalta según lo que penaliza: rojo si su mejora es alta, naranja si no.
+        if (!deshabilitado && enEjecucion)
+        {
+            string tono = s.Impacto == "Alto" ? "Rojo" : "Naranja";
+            tarjeta.Background = Ui.B(tono + "Fondo");
+            tarjeta.BorderBrush = Ui.B(tono + "Fondo");
+            tarjeta.ToolTip = "En ejecución: consume recursos ahora mismo";
+        }
         if (!deshabilitado)
         {
             tarjeta.Cursor = Cursors.Hand;
@@ -146,6 +157,9 @@ class PaginaServicios : UserControl
         btnAplicar.IsEnabled = n > 0;
         var p = btnAplicar.Content as StackPanel;
         if (p != null) ((TextBlock)p.Children[1]).Text = n > 0 ? "Desactivar marcados (" + n + ")" : "Desactivar marcados";
+        int activos = servicios.Count(x => Servicios.GetStart(x.Nombre) != 4 && Servicios.EnEjecucion(x.Nombre));
+        txtMarcados.Text = (n == 0 ? "Ningún servicio marcado" : n == 1 ? "1 servicio marcado" : n + " servicios marcados") +
+                           "  ·  " + activos + " servicios del catálogo en ejecución";
     }
 
     void Marcar(Perfil p)
