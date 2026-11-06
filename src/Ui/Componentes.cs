@@ -66,6 +66,16 @@ static class Ui
         return b;
     }
 
+    // Botón pequeño solo con icono, con la descripción en la información sobre herramientas.
+    public static Button BotonIcono(string glifo, string ayuda, RoutedEventHandler click)
+    {
+        var g = Glifo(glifo, 14);
+        g.ClearValue(TextBlock.ForegroundProperty);
+        var b = new Button { Content = g, ToolTip = ayuda, Padding = new Thickness(9, 7, 9, 7), Margin = new Thickness(6, 0, 0, 0) };
+        if (click != null) b.Click += click;
+        return b;
+    }
+
     public static StackPanel Fila(params UIElement[] hijos)
     {
         var p = new StackPanel { Orientation = Orientation.Horizontal };

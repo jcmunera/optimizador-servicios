@@ -1,6 +1,7 @@
 ﻿# Compila dist\OptimizadorServicios.exe (interfaz WPF) con el compilador de C#
 # incluido en .NET Framework 4 (viene con Windows 10, no hace falta instalar nada).
-param([string]$Salida)
+# -Captura: versión de desarrollo que genera capturas de pantalla (sin permisos de administrador).
+param([string]$Salida, [switch]$Captura)
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 $fw   = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
@@ -18,10 +19,9 @@ $refs = 'System.dll', 'System.Core.dll', 'System.Xaml.dll', 'System.Management.d
         ForEach-Object { "/reference:$(Join-Path $fw $_)" }
 $fuentes = Get-ChildItem (Join-Path $root 'src') -Recurse -Filter *.cs | ForEach-Object { $_.FullName }
 
+$extra = if ($Captura) { '/define:CAPTURA' } else { "/win32manifest:$(Join-Path $root 'src\app.manifest')" }
 & $csc /nologo /target:winexe /platform:anycpu /optimize+ /codepage:65001 `
-    "/out:$Salida" `
-    "/win32manifest:$(Join-Path $root 'src\app.manifest')" `
-    $refs $fuentes
+    "/out:$Salida" $extra $refs $fuentes
 
 if ($LASTEXITCODE -ne 0) { throw "La compilación falló (código $LASTEXITCODE)" }
 Write-Host "Generado: $Salida" -ForegroundColor Green

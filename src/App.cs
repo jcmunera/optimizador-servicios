@@ -25,6 +25,16 @@ static class Program
             Dialogo.Mostrar(app.MainWindow, "Error inesperado", e.Exception.Message, "Rojo");
             e.Handled = true;
         };
+#if CAPTURA
+        if (Captura.Carpeta != null)
+        {
+            Captura.PrepararDatos();
+            var w = new VentanaPrincipal();
+            w.Loaded += (s, e) => Captura.Ejecutar(w);
+            app.Run(w);
+            return 0;
+        }
+#endif
         app.Run(new VentanaPrincipal());
         return 0;
     }
