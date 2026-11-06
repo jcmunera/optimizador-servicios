@@ -1,4 +1,4 @@
-// Ventana principal: menú lateral, área de páginas, barra de estado y el ciclo guiado
+﻿// Ventana principal: menú lateral, área de páginas, barra de estado y el ciclo guiado
 // medir -> cambiar -> reiniciar -> medir que comparten todas las páginas.
 using System;
 using System.Collections.Generic;
@@ -47,6 +47,7 @@ class VentanaPrincipal : Window
         AgregarPagina("ajustes", "Efectos y ajustes", "", () => new PaginaAjustes(this));
         AgregarPagina("tareas", "Tareas programadas", "", () => new PaginaTareas(this));
         AgregarPagina("programas", "Programas", "", () => new PaginaProgramas(this));
+        AgregarPagina("limpieza", "Limpieza de disco", "", () => new PaginaLimpieza(this));
         AgregarPagina("analisis", "Análisis", "", () => new PaginaAnalisis(this));
 
         var registro = new Button { Style = Ui.S("BotonEnlace"), Content = "Ver registro de cambios", Margin = new Thickness(22, 0, 0, 6) };
