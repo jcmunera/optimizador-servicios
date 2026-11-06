@@ -89,6 +89,9 @@ class PaginaPanel : UserControl
     public async void Refrescar()
     {
         txtEquipo.Text = Environment.MachineName;
+#if CAPTURA
+        txtEquipo.Text = "MI-EQUIPO";   // las capturas del manual no muestran el nombre real del equipo
+#endif
         txtEncendido.Text = "Encendido desde hace " + Duracion(Sistema.SegundosEncendido);
         if (info == null)
         {

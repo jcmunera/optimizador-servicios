@@ -2,12 +2,12 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Optimizador de Servicios - Manual de uso y despliegue</title>
+<title>Optimizador de Servicios - Manual de uso</title>
 <style>
   @page {
     size: A4;
     margin: 16mm 16mm 18mm 16mm;
-    @bottom-left { content: "Optimizador de Servicios · Manual de uso y despliegue"; font: 8pt "Segoe UI", sans-serif; color: #888; }
+    @bottom-left { content: "Optimizador de Servicios · Manual de uso"; font: 8pt "Segoe UI", sans-serif; color: #888; }
     @bottom-right { content: "Página " counter(page) " de " counter(pages); font: 8pt "Segoe UI", sans-serif; color: #888; }
   }
   @page :first { @bottom-left { content: none; } @bottom-right { content: none; } }
@@ -72,7 +72,11 @@
   .indice > ol > li { font-weight: 600; margin-top: 2mm; }
   .indice ol ol { padding-left: 7mm; font-weight: 400; }
   .indice ol ol li { margin: 0.6mm 0; }
+  .chip { display: inline-block; padding: 0 8px; border-radius: 10px; font-weight: 600; font-size: 8.5pt; }
+  .chip.verde { background: #DFF6DD; color: #0F7B0F; } .chip.amarillo { background: #FFF4CE; color: #8A5300; }
+  .chip.rojo { background: #FDE7E9; color: #C42B1C; } .chip.gris { background: #EBEBEB; color: #5F5F5F; }
 </style>
+
 </head>
 <body>
 
@@ -80,16 +84,17 @@
 <section class="portada">
   <div class="banda">
     <h1>Optimizador de Servicios</h1>
-    <div class="sub">Manual de uso y despliegue · Windows 10</div>
+    <div class="sub">Manual de uso · Windows 10</div>
   </div>
   <div class="resumen">
-    <p>Herramienta portable para desactivar de forma selectiva y reversible los servicios de Windows 10 que más
-    penalizan el rendimiento en equipos modestos (4 GB de RAM y disco duro mecánico), medir el efecto de los
-    cambios y desplegarlos en los equipos de una empresa, centro educativo u organización.</p>
+    <p>Herramienta portable para mejorar el rendimiento de equipos modestos (4 GB de RAM y disco duro
+    mecánico): desactiva de forma selectiva y reversible servicios, efectos visuales, ajustes, tareas
+    programadas y programas de inicio, elimina aplicaciones preinstaladas, libera espacio en disco y mide
+    el efecto de los cambios antes y después.</p>
   </div>
   <div class="datos">
-    Versión del programa: 2.0<br>
-    Fecha del documento: octubre de 2026<br>
+    Versión del programa: 3.0<br>
+    Fecha del documento: noviembre de 2026<br>
     Archivo: <code>OptimizadorServicios.exe</code>
   </div>
 </section>
@@ -99,16 +104,20 @@
 <nav class="indice">
 <ol>
   <li><a href="#intro">1. Introducción</a>
-    <ol><li><a href="#que-hace">1.1 Qué hace</a></li><li><a href="#requisitos">1.2 Requisitos</a></li><li><a href="#archivos">1.3 Archivos del paquete</a></li></ol></li>
+    <ol><li><a href="#que-hace">1.1 Qué hace</a></li><li><a href="#requisitos">1.2 Requisitos</a></li><li><a href="#primer-uso">1.3 Primer uso</a></li></ol></li>
   <li><a href="#conceptos">2. Conceptos clave</a>
-    <ol><li><a href="#todos-usuarios">2.1 Los cambios afectan a todo el equipo</a></li><li><a href="#tipos-inicio">2.2 Tipos de inicio y estado</a></li><li><a href="#copia">2.3 Copia de seguridad y restablecimiento</a></li><li><a href="#datos">2.4 Dónde guarda sus datos</a></li></ol></li>
-  <li><a href="#catalogo">3. Catálogo de servicios y perfiles</a></li>
-  <li><a href="#uso">4. Uso en un equipo (interfaz gráfica)</a>
-    <ol><li><a href="#pestana-servicios">4.1 Pestaña Servicios</a></li><li><a href="#pestana-analisis">4.2 Pestaña Análisis</a></li><li><a href="#ciclo">4.3 Ciclo guiado: medir, cambiar, reiniciar, medir</a></li><li><a href="#programas">4.4 Pestaña Programas</a></li></ol></li>
-  <li><a href="#despliegue">5. Despliegue en varios equipos</a>
-    <ol><li><a href="#planificacion">5.1 Planificación</a></li><li><a href="#cli">5.2 Referencia de la línea de comandos</a></li><li><a href="#compartidas">5.3 Preparar las carpetas compartidas</a></li><li><a href="#gpo">5.4 Despliegue con directiva de grupo (GPO)</a></li><li><a href="#intune">5.5 Despliegue con Intune</a></li><li><a href="#otras">5.6 Otras herramientas (SCCM, PDQ, manual)</a></li><li><a href="#personalizado">5.7 Perfiles personalizados</a></li><li><a href="#verificacion">5.8 Verificación e inventario</a></li><li><a href="#revertir">5.9 Revertir un despliegue</a></li></ol></li>
-  <li><a href="#problemas">6. Solución de problemas</a></li>
-  <li><a href="#consola">7. Versión de consola (PowerShell)</a></li>
+    <ol><li><a href="#riesgo">2.1 Nivel de riesgo</a></li><li><a href="#alcance">2.2 A quién afectan los cambios</a></li><li><a href="#copias">2.3 Copias de seguridad</a></li><li><a href="#ciclo">2.4 Ciclo guiado: medir, cambiar, reiniciar, medir</a></li></ol></li>
+  <li><a href="#ventana">3. La ventana</a></li>
+  <li><a href="#panel">4. Panel</a></li>
+  <li><a href="#servicios">5. Servicios</a></li>
+  <li><a href="#ajustes">6. Efectos y ajustes</a></li>
+  <li><a href="#tareas">7. Tareas programadas</a></li>
+  <li><a href="#programas">8. Programas</a>
+    <ol><li><a href="#inicio">8.1 Programas de inicio</a></li><li><a href="#consumo">8.2 Consumo en uso normal</a></li><li><a href="#apps">8.3 Apps de la Tienda</a></li></ol></li>
+  <li><a href="#limpieza">9. Limpieza de disco</a></li>
+  <li><a href="#analisis">10. Análisis</a></li>
+  <li><a href="#deshacer">11. Cómo deshacer los cambios</a></li>
+  <li><a href="#problemas">12. Solución de problemas</a></li>
   <li><a href="#anexo">Anexo. Referencia rápida</a></li>
 </ol>
 </nav>
@@ -117,513 +126,340 @@
 <h1 id="intro">1. Introducción</h1>
 
 <h2 id="que-hace">1.1 Qué hace</h2>
-<p>Windows 10 arranca muchos servicios que, en un equipo con poca memoria y un disco duro mecánico, compiten por el
-disco y la RAM aunque el usuario no los necesite. El Optimizador de Servicios permite:</p>
-<ul>
-  <li><b>Desactivar</b> de forma opcional los servicios que más afectan al rendimiento, eligiéndolos uno a uno o mediante perfiles.</li>
-  <li><b>Restablecer</b> todos los cambios con un solo clic, devolviendo cada servicio a su configuración original.</li>
-  <li><b>Detectar programas</b> que ralentizan el arranque o consumen muchos recursos, y desactivarlos del inicio o desinstalarlos.</li>
-  <li><b>Medir</b> el rendimiento antes y después (tiempo de arranque, RAM, CPU, actividad del disco…) y comparar los resultados.</li>
-  <li><b>Desplegar</b> la misma configuración en muchos equipos desde la línea de comandos, por GPO, Intune u otras herramientas.</li>
-</ul>
-<p>El programa <b>no modifica</b> Windows Update, Windows Defender ni ningún servicio fuera de su catálogo, para no comprometer la seguridad del equipo.</p>
+<p>Windows 10 incluye muchos servicios, efectos y tareas que, en un equipo con poca memoria y un disco duro
+mecánico, compiten por el disco y la RAM aunque el usuario no los necesite. El Optimizador reúne en una sola
+aplicación lo que más influye en el rendimiento:</p>
+<table>
+  <thead><tr><th style="width:26%">Sección</th><th>Para qué sirve</th></tr></thead>
+  <tbody>
+    <tr><td>Panel</td><td>Ver el estado del equipo (procesador, memoria, disco) y recomendaciones.</td></tr>
+    <tr><td>Servicios</td><td>Desactivar servicios de Windows que consumen recursos.</td></tr>
+    <tr><td>Efectos y ajustes</td><td>Quitar animaciones y transparencias, aplicaciones en segundo plano, anuncios y telemetría.</td></tr>
+    <tr><td>Tareas programadas</td><td>Desactivar tareas de telemetría y diagnóstico que despiertan el disco.</td></tr>
+    <tr><td>Programas</td><td>Revisar los programas que se inician con Windows y los que más consumen; eliminar aplicaciones preinstaladas.</td></tr>
+    <tr><td>Limpieza de disco</td><td>Liberar espacio borrando temporales, restos de actualizaciones y cachés.</td></tr>
+    <tr><td>Análisis</td><td>Medir el rendimiento antes y después de los cambios.</td></tr>
+  </tbody>
+</table>
+<p>El programa <b>no modifica</b> Windows Update ni Windows Defender, para no comprometer la seguridad del equipo.</p>
 
 <h2 id="requisitos">1.2 Requisitos</h2>
 <table>
-  <thead><tr><th style="width:32%">Requisito</th><th>Detalle</th></tr></thead>
+  <thead><tr><th style="width:26%">Requisito</th><th>Detalle</th></tr></thead>
   <tbody>
     <tr><td>Sistema operativo</td><td>Windows 10 (también funciona en Windows 11).</td></tr>
-    <tr><td>.NET Framework 4.x</td><td>Incluido de serie en Windows 10. No hay que instalar nada.</td></tr>
-    <tr><td>Permisos</td><td>Administrador. Al abrirlo, Windows pide confirmación (UAC). Ejecutado como SYSTEM (GPO, Intune) no pide nada.</td></tr>
-    <tr><td>Instalación</td><td>Ninguna: es un único archivo portable (unos 70 KB).</td></tr>
+    <tr><td>.NET Framework 4.8</td><td>Incluido de serie en Windows 10. No hay que instalar nada.</td></tr>
+    <tr><td>Permisos</td><td>Administrador. Al abrirlo, Windows pide confirmación (aviso de Control de cuentas de usuario).</td></tr>
+    <tr><td>Instalación</td><td>Ninguna: es un único archivo portable que se puede llevar en un USB.</td></tr>
   </tbody>
 </table>
 
-<h2 id="archivos">1.3 Archivos del paquete</h2>
-<table>
-  <thead><tr><th style="width:38%">Archivo</th><th>Para qué sirve</th></tr></thead>
-  <tbody>
-    <tr><td><code>dist\OptimizadorServicios.exe</code></td><td>El programa: interfaz gráfica y línea de comandos en un solo archivo.</td></tr>
-    <tr><td><code>despliegue\aplicar.cmd</code></td><td>Script de ejemplo para aplicar un perfil (GPO, Intune, SCCM…).</td></tr>
-    <tr><td><code>despliegue\restablecer.cmd</code></td><td>Script de ejemplo para revertir los cambios.</td></tr>
-    <tr><td><code>despliegue\perfil-personalizado.txt</code></td><td>Ejemplo de lista propia de servicios.</td></tr>
-    <tr><td><code>Optimizar-Servicios.ps1</code> y <code>.bat</code></td><td>Versión de consola simplificada (ver capítulo 7).</td></tr>
-    <tr><td><code>src\</code> y <code>build.ps1</code></td><td>Código fuente y script para volver a compilar el <code>.exe</code>.</td></tr>
-  </tbody>
-</table>
-
+<h2 id="primer-uso">1.3 Primer uso</h2>
+<ol class="pasos">
+  <li>Descarga <code>OptimizadorServicios.exe</code> desde la sección <i>Releases</i> del repositorio en GitHub.</li>
+  <li>Haz doble clic y acepta el aviso de permisos de administrador.</li>
+  <li>La primera vez, el programa mide automáticamente el rendimiento actual del equipo (medición ANTES). Si el equipo se acaba de encender, espera a que pasen 2 minutos para que Windows termine de cargar.</li>
+  <li>Revisa el <b>Panel</b> y sigue sus recomendaciones.</li>
+</ol>
 <div class="aviso"><b>Aviso de SmartScreen y antivirus</b>
 El ejecutable no está firmado digitalmente. La primera vez, Windows SmartScreen puede mostrar «Windows protegió su PC»:
-pulsa <i>Más información</i> → <i>Ejecutar de todas formas</i>. En una organización conviene firmarlo con el certificado
-de firma de código de la entidad o añadirlo a la lista de permitidos del antivirus antes de desplegarlo.</div>
+pulsa <i>Más información</i> → <i>Ejecutar de todas formas</i>. Algún antivirus puede marcarlo por cambiar la configuración de Windows con permisos de administrador.</div>
 
 <!-- ======================================================================= -->
 <h1 id="conceptos">2. Conceptos clave</h1>
 
-<h2 id="todos-usuarios">2.1 Los cambios afectan a todo el equipo</h2>
-<p>Los servicios de Windows pertenecen al <b>equipo</b>, no a cada usuario: se inician con el sistema, antes de que
-nadie inicie sesión, y son compartidos por todas las cuentas. Por tanto, cuando se deshabilita un servicio
-<b>queda deshabilitado para todos los usuarios del equipo</b>. No es posible desactivarlo solo para una cuenta.</p>
-<p>Esto es precisamente lo que interesa en organizaciones: la configuración se aplica por equipo (por ejemplo, a
-todos los ordenadores de un aula o de una unidad organizativa), con independencia de quién inicie sesión.</p>
-
-<h2 id="tipos-inicio">2.2 Tipos de inicio y estado</h2>
-<p>Cada servicio tiene dos propiedades independientes, que el programa muestra en columnas separadas:</p>
-<div class="dos-col">
-<div>
+<h2 id="riesgo">2.1 Nivel de riesgo</h2>
+<p>Cada servicio, ajuste, tarea o aplicación lleva un distintivo que indica la probabilidad de que el cambio afecte a algo que usas:</p>
 <table>
-  <thead><tr><th>Tipo de inicio</th><th>Significado</th></tr></thead>
+  <thead><tr><th style="width:20%">Distintivo</th><th>Significado</th></tr></thead>
   <tbody>
-    <tr><td>Automático</td><td>Arranca con Windows.</td></tr>
-    <tr><td>Manual</td><td>Arranca cuando algo lo solicita.</td></tr>
-    <tr><td><b>Deshabilitado</b></td><td>No puede arrancar.</td></tr>
+    <tr><td><span class="chip verde">Seguro</span></td><td>No afecta al uso normal del equipo en la gran mayoría de casos.</td></tr>
+    <tr><td><span class="chip amarillo">Moderado</span></td><td>Puede notarse en algún caso (por ejemplo, la búsqueda es más lenta o una aplicación deja de avisar).</td></tr>
+    <tr><td><span class="chip rojo">Arriesgado</span></td><td>Deja de funcionar algo concreto (imprimir, Bluetooth...). Desactívalo solo si sabes que no lo usas.</td></tr>
   </tbody>
 </table>
-</div>
-<div>
-<table>
-  <thead><tr><th>Estado</th><th>Significado</th></tr></thead>
-  <tbody>
-    <tr><td>En ejecución</td><td>Está funcionando ahora.</td></tr>
-    <tr><td>Detenido</td><td>No está funcionando.</td></tr>
-  </tbody>
-</table>
-</div>
-</div>
-<p>Al desactivar un servicio, el programa primero lo pone en <b>Deshabilitado</b> y después intenta detenerlo
-(espera como máximo 20 segundos). Si no se detiene a tiempo —le ocurre a veces a SysMain en discos lentos— queda
-<b>deshabilitado pero aún en ejecución</b> hasta el siguiente reinicio, tras el cual ya no arranca.</p>
+<p>Los servicios llevan además un distintivo azul de <b>mejora</b> (alta, media o baja), que indica cuánto rendimiento se gana.</p>
 
-<h2 id="copia">2.3 Copia de seguridad y restablecimiento</h2>
-<p>Antes de cambiar un servicio por primera vez, el programa guarda su tipo de inicio original y si estaba en
-ejecución. Aunque se aplique el mismo cambio muchas veces (por ejemplo, en cada arranque mediante GPO), la copia
-conserva siempre el <b>estado original</b>, de modo que <i>Restablecer</i> devuelve el equipo a como estaba antes
-de usar el programa.</p>
-<p>La copia se guarda <b>en cada equipo</b>, así que restablecer funciona aunque el programa se ejecute desde otra
-ubicación (un USB, una carpeta de red…). Tras restablecer, se recomienda reiniciar.</p>
-<div class="aviso"><b>No borres la carpeta de datos</b>
-Si se elimina <code>C:\ProgramData\OptimizadorServicios</code>, se pierde la copia de seguridad y ya no será
-posible restablecer automáticamente los servicios a su estado original.</div>
+<h2 id="alcance">2.2 A quién afectan los cambios</h2>
+<ul>
+  <li><b>Servicios, tareas programadas, telemetría, Cortana, plan de energía, hibernación y limpieza de carpetas de Windows:</b> afectan a <b>todo el equipo</b>, es decir, a todos los usuarios.</li>
+  <li><b>Efectos visuales, aplicaciones en segundo plano, anuncios, programas de inicio «del usuario actual» y apps de la Tienda:</b> afectan al <b>usuario que abre el optimizador</b>. Si los permisos de administrador se conceden con otra cuenta, se aplican a esa cuenta.</li>
+</ul>
 
-<h2 id="datos">2.4 Dónde guarda sus datos</h2>
-<p>Todo se guarda en <code>C:\ProgramData\OptimizadorServicios\</code>:</p>
+<h2 id="copias">2.3 Copias de seguridad</h2>
+<p>Antes de cambiar algo por primera vez, el programa guarda su estado original en <code>C:\ProgramData\OptimizadorServicios\</code>.
+Aunque se aplique el mismo cambio varias veces, se conserva siempre el estado original, de modo que <b>Restablecer todo</b>
+devuelve el equipo a como estaba antes de usar el programa. Además, al desactivar servicios se puede crear un
+<b>punto de restauración</b> de Windows.</p>
 <table>
-  <thead><tr><th style="width:28%">Archivo</th><th>Contenido</th></tr></thead>
+  <thead><tr><th style="width:30%">Archivo</th><th>Contenido</th></tr></thead>
   <tbody>
-    <tr><td><code>backup.json</code></td><td>Estado original de cada servicio modificado. Imprescindible para restablecer.</td></tr>
-    <tr><td><code>registro.log</code></td><td>Historial de todas las acciones, con fecha y hora.</td></tr>
-    <tr><td><code>mediciones.json</code></td><td>Mediciones ANTES y DESPUÉS de la pestaña Análisis.</td></tr>
+    <tr><td><code>backup.json</code></td><td>Estado original de los servicios cambiados.</td></tr>
+    <tr><td><code>ajustes-backup.json</code></td><td>Valores originales de los efectos y ajustes aplicados.</td></tr>
+    <tr><td><code>tareas-backup.json</code></td><td>Estado original de las tareas programadas desactivadas.</td></tr>
+    <tr><td><code>mediciones.json</code></td><td>Mediciones ANTES y DESPUÉS.</td></tr>
     <tr><td><code>estado.json</code></td><td>Fecha del último cambio, para saber si falta reiniciar o medir.</td></tr>
+    <tr><td><code>registro.log</code></td><td>Historial de todas las acciones, con fecha y hora.</td></tr>
   </tbody>
 </table>
+<div class="aviso"><b>No borres la carpeta de datos</b>
+Sin estos archivos ya no es posible restablecer automáticamente los cambios.</div>
+<div class="nota"><b>Lo que no se puede deshacer</b>
+La limpieza de disco, la desinstalación de programas y la eliminación de apps de la Tienda no se pueden deshacer desde el
+optimizador. Por eso siempre piden una confirmación adicional.</div>
 
-<!-- ======================================================================= -->
-<h1 id="catalogo">3. Catálogo de servicios y perfiles</h1>
-<p>El programa solo actúa sobre los servicios de este catálogo. Los que no existan en un equipo concreto se omiten.
-Las cuatro últimas columnas indican qué perfiles incluyen cada servicio
-(<b>R</b>ecomendado, <b>C</b>onservador, <b>O</b>ficina, <b>A</b>ulas).</p>
-<table>
-  <thead><tr><th style="width:27%">Servicio</th><th style="width:9%">Impacto</th><th>Descripción</th><th class="c-centro" style="width:4.5%">R</th><th class="c-centro" style="width:4.5%">C</th><th class="c-centro" style="width:4.5%">O</th><th class="c-centro" style="width:4.5%">A</th></tr></thead>
-  <tbody>
-    <tr><td><code>SysMain</code></td><td class="alto">Alto</td><td>Superfetch: precarga programas en RAM. Principal causa del «disco al 100 %» en HDD.</td><td class="si">●</td><td></td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>WSearch</code></td><td class="alto">Alto</td><td>Indexador de Windows Search. La búsqueda sigue funcionando, pero más lenta.</td><td class="si">●</td><td></td><td></td><td class="si">●</td></tr>
-    <tr><td><code>DiagTrack</code></td><td class="alto">Alto</td><td>Telemetría y experiencias del usuario conectado.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>DoSvc</code></td><td class="medio">Medio</td><td>Optimización de distribución (comparte actualizaciones entre equipos).</td><td class="si">●</td><td></td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>dmwappushservice</code></td><td class="medio">Medio</td><td>Enrutamiento de mensajes WAP push (telemetría).</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>PcaSvc</code></td><td class="medio">Medio</td><td>Asistente de compatibilidad de programas.</td><td class="si">●</td><td></td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>WerSvc</code></td><td class="bajo">Bajo</td><td>Informe de errores de Windows.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>diagnosticshub.standard­collector.service</code></td><td class="bajo">Bajo</td><td>Recopilador del concentrador de diagnósticos.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>TrkWks</code></td><td class="bajo">Bajo</td><td>Seguimiento de vínculos distribuidos.</td><td class="si">●</td><td></td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>MapsBroker</code></td><td class="bajo">Bajo</td><td>Administrador de mapas descargados.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>RetailDemo</code></td><td class="bajo">Bajo</td><td>Modo demostración para tiendas.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>wisvc</code></td><td class="bajo">Bajo</td><td>Programa Windows Insider.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>WMPNetworkSvc</code></td><td class="bajo">Bajo</td><td>Uso compartido de red de Windows Media Player.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>RemoteRegistry</code></td><td class="bajo">Bajo</td><td>Registro remoto (desactivarlo también mejora la seguridad).</td><td class="si">●</td><td></td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>Fax</code></td><td class="bajo">Bajo</td><td>Servicio de fax.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>XblAuthManager</code>, <code>XblGameSave</code>, <code>XboxNetApiSvc</code>, <code>XboxGipSvc</code></td><td class="bajo">Bajo</td><td>Servicios de Xbox Live y accesorios de Xbox.</td><td class="si">●</td><td class="si">●</td><td class="si">●</td><td class="si">●</td></tr>
-    <tr><td><code>lfsvc</code></td><td class="bajo">Bajo</td><td>Geolocalización (Mapas, Tiempo, zona horaria automática).</td><td></td><td></td><td></td><td class="si">●</td></tr>
-    <tr><td><code>WbioSrvc</code></td><td class="bajo">Bajo</td><td>Biometría: huella y Windows Hello.</td><td></td><td></td><td></td><td class="si">●</td></tr>
-    <tr><td><code>Spooler</code></td><td class="medio">Medio</td><td>Cola de impresión. <b>Necesario para imprimir</b> (incluido «Imprimir a PDF»).</td><td></td><td></td><td></td><td></td></tr>
-    <tr><td><code>bthserv</code></td><td class="bajo">Bajo</td><td>Bluetooth. Necesario para ratones y auriculares Bluetooth.</td><td></td><td></td><td></td><td></td></tr>
-    <tr><td><code>TabletInputService</code></td><td class="bajo">Bajo</td><td>Teclado táctil y escritura a mano. Puede afectar a la entrada de texto.</td><td></td><td></td><td></td><td></td></tr>
-  </tbody>
-</table>
-
-<h3>Qué perfil elegir</h3>
-<table>
-  <thead><tr><th style="width:19%">Perfil</th><th style="width:16%">Identificador</th><th>Cuándo usarlo</th></tr></thead>
-  <tbody>
-    <tr><td>Recomendado</td><td><code>recomendado</code></td><td>Equipos individuales o domésticos. Máxima mejora con riesgo bajo.</td></tr>
-    <tr><td>Conservador</td><td><code>conservador</code></td><td>Primera prueba en una organización: solo quita telemetría, diagnósticos, Xbox y extras. El usuario no nota ningún cambio funcional.</td></tr>
-    <tr><td>Oficina / empresa</td><td><code>oficina</code></td><td>Puestos de oficina. Igual que Recomendado pero <b>mantiene Windows Search</b>, que necesita la búsqueda de Outlook y del Explorador.</td></tr>
-    <tr><td>Aulas / compartidos</td><td><code>aulas</code></td><td>Aulas de informática, bibliotecas, equipos de uso compartido. Recomendado + geolocalización y biometría.</td></tr>
-  </tbody>
-</table>
-<div class="nota"><b>Servicios que ningún perfil desactiva</b>
-<code>Spooler</code>, <code>bthserv</code> y <code>TabletInputService</code> solo se desactivan si se eligen
-expresamente (en la interfaz o con una lista propia). Desactivar <code>Spooler</code> impide imprimir.</div>
-
-<!-- ======================================================================= -->
-<h1 id="uso">4. Uso en un equipo (interfaz gráfica)</h1>
-<p>Haz doble clic en <code>OptimizadorServicios.exe</code> y acepta el aviso de permisos de administrador. Se abre una
-ventana con tres pestañas: <b>Servicios</b>, <b>Análisis</b> y <b>Programas</b>.</p>
-
-<h2 id="pestana-servicios">4.1 Pestaña Servicios</h2>
-<figure>
-  <img src="img/pestana-servicios.png" alt="Pestaña Servicios">
-  <figcaption>Figura 1. Pestaña Servicios: lista con tipo de inicio, estado y leyenda de colores.</figcaption>
-</figure>
-<p>La lista muestra los servicios agrupados en <i>Recomendados</i> y <i>Opcionales</i>. El <b>color de fondo</b> de cada fila resume su situación:</p>
-<table>
-  <thead><tr><th style="width:24%">Fondo</th><th>Significado</th></tr></thead>
-  <tbody>
-    <tr><td style="background:#e4f4e4">Verde</td><td>Deshabilitado y detenido: el cambio ya tiene efecto.</td></tr>
-    <tr><td style="background:#ffeed6">Naranja</td><td>Deshabilitado pero aún en ejecución: se detendrá al reiniciar.</td></tr>
-    <tr><td>Blanco</td><td>No deshabilitado (Automático o Manual).</td></tr>
-  </tbody>
-</table>
-<p>La columna <b>Cambiado</b> indica qué servicios ha modificado el programa y, por tanto, se pueden restablecer.</p>
-<h3>Desactivar servicios</h3>
+<h2 id="ciclo">2.4 Ciclo guiado: medir, cambiar, reiniciar, medir</h2>
+<p>Para que la mejora se pueda comprobar, el programa guía por este ciclo en Servicios, Efectos y ajustes, Tareas y Programas de inicio:</p>
 <ol class="pasos">
-  <li>Elige un perfil en el desplegable <b>Perfil</b> y pulsa <b>Marcar</b>, o marca las casillas a mano.</li>
-  <li>Deja activada <b>Crear punto de restauración</b> (recomendado; Windows solo crea uno cada 24 horas).</li>
-  <li>Pulsa <b>Desactivar marcados</b> y confirma la lista.</li>
-  <li>Si aún no se ha medido el rendimiento, el programa ofrece medirlo primero (ver 4.3).</li>
-  <li>Al terminar, el programa ofrece <b>reiniciar</b>. Los cambios tienen efecto completo tras el reinicio.</li>
+  <li><b>Antes de un cambio:</b> si no hay medición ANTES, o es anterior al último cambio, ofrece medir primero.</li>
+  <li><b>Después del cambio:</b> ofrece reiniciar y programa la reapertura automática del optimizador un minuto después de iniciar sesión.</li>
+  <li><b>Tras reiniciar:</b> el optimizador se abre solo y ofrece medir DESPUÉS. Si el equipo lleva menos de 2 minutos encendido, espera con una cuenta atrás.</li>
+  <li><b>Si se abre sin haber reiniciado:</b> recuerda que hay cambios pendientes y ofrece reiniciar.</li>
 </ol>
-<h3>Restablecer</h3>
-<p>El botón <b>Restablecer todos los cambios</b> (indica entre paréntesis cuántos hay) devuelve todos los servicios
-modificados a su estado original. Después ofrece reiniciar.</p>
 
-<h2 id="pestana-analisis">4.2 Pestaña Análisis</h2>
+<!-- ======================================================================= -->
+<h1 id="ventana" class="sigue">3. La ventana</h1>
 <figure>
-  <img src="img/pestana-analisis.png" alt="Pestaña Análisis">
-  <figcaption>Figura 2. Comparación antes/después (valores de ejemplo).</figcaption>
+  <img src="img/servicios-oscuro.png" alt="Ventana en tema oscuro">
+  <figcaption>Figura 1. La ventana en tema oscuro. El tema (claro u oscuro) sigue la configuración de Windows.</figcaption>
 </figure>
-<p>Mide el rendimiento durante 30, 60 o 120 segundos y guarda el resultado como ANTES o DESPUÉS. La columna
-<b>Cambio</b> aparece en <span style="color:var(--verde);font-weight:700">verde</span> si mejora,
-<span style="color:var(--rojo);font-weight:700">rojo</span> si empeora y gris si la diferencia es inferior al 3 %.</p>
+<ul>
+  <li><b>Menú lateral:</b> da acceso a las siete secciones. Abajo están el enlace <i>Ver registro de cambios</i>, que abre el historial en el Bloc de notas, y la versión del programa.</li>
+  <li><b>Barra de estado:</b> en la parte inferior muestra la última acción y, durante las mediciones y análisis, una barra de progreso.</li>
+  <li><b>Avisos:</b> antes de cualquier cambio aparece un cuadro de confirmación con la lista de lo que se va a hacer y, si procede, una advertencia.</li>
+  <li><b>Filas:</b> en las listas se puede pulsar en cualquier parte de una fila para marcarla o desmarcarla.</li>
+</ul>
+
+<!-- ======================================================================= -->
+<h1 id="panel">4. Panel</h1>
+<figure>
+  <img src="img/panel.png" alt="Panel">
+  <figcaption>Figura 2. Panel.</figcaption>
+</figure>
+<ul>
+  <li><b>Equipo:</b> nombre, versión de Windows y tiempo que lleva encendido.</li>
+  <li><b>Procesador, memoria y disco del sistema:</b> modelo, capacidad y uso en tiempo real (se actualiza cada 2 segundos). La barra se vuelve amarilla por encima del 60 % y roja por encima del 85 %. El disco indica si es un <b>disco duro mecánico (HDD)</b> o un <b>SSD</b> y el espacio libre.</li>
+  <li><b>Recomendaciones:</b> según el equipo (poca memoria, disco mecánico, poco espacio libre, ajustes recomendados sin aplicar, falta de medición o reinicio pendiente), con un botón que lleva a la sección correspondiente.</li>
+  <li><b>Optimizador:</b> resumen de servicios deshabilitados y cambiados, y fecha de las mediciones.</li>
+</ul>
+
+<!-- ======================================================================= -->
+<h1 id="servicios">5. Servicios</h1>
+<figure>
+  <img src="img/servicios.png" alt="Servicios">
+  <figcaption>Figura 3. Servicios.</figcaption>
+</figure>
+<ol class="pasos">
+  <li>Elige un <b>perfil</b> y pulsa <b>Marcar perfil</b>, o marca los servicios a mano.</li>
+  <li>Deja activado <b>Crear punto de restauración</b> (Windows solo crea uno cada 24 horas).</li>
+  <li>Pulsa <b>Desactivar marcados</b>, confirma y reinicia cuando el programa lo proponga.</li>
+</ol>
+<p>Cada fila muestra el tipo de inicio y si el servicio está en ejecución. Los ya deshabilitados no se pueden marcar.
+Si un servicio no se detiene a tiempo (le ocurre a veces a SysMain en discos lentos), queda deshabilitado y se detiene al reiniciar.</p>
+
+<h3>Perfiles</h3>
 <table>
-  <thead><tr><th style="width:32%">Métrica</th><th>Qué mide</th></tr></thead>
+  <thead><tr><th style="width:26%">Perfil</th><th>Cuándo usarlo</th></tr></thead>
+  <tbody>
+    <tr><td>Recomendado</td><td>Equipos individuales o domésticos. Máxima mejora con riesgo bajo.</td></tr>
+    <tr><td>Conservador</td><td>Solo telemetría, diagnósticos, Xbox y extras: el usuario no nota ningún cambio.</td></tr>
+    <tr><td>Oficina / empresa</td><td>Como Recomendado, pero mantiene Windows Search (lo necesita la búsqueda de Outlook).</td></tr>
+    <tr><td>Aulas / compartidos</td><td>Recomendado, más geolocalización y biometría.</td></tr>
+  </tbody>
+</table>
+
+<h3>Catálogo</h3>
+<table>
+  <thead><tr><th style="width:28%">Servicio</th><th style="width:10%">Mejora</th><th style="width:12%">Riesgo</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td><code>SysMain</code></td><td>Alta</td><td>Seguro</td><td>Superfetch: precarga programas en RAM. Principal causa del «disco al 100 %» en HDD.</td></tr>
+    <tr><td><code>WSearch</code></td><td>Alta</td><td>Moderado</td><td>Indexador de búsqueda. La búsqueda sigue funcionando, más lenta.</td></tr>
+    <tr><td><code>DiagTrack</code></td><td>Alta</td><td>Seguro</td><td>Telemetría.</td></tr>
+    <tr><td><code>DoSvc</code></td><td>Media</td><td>Seguro</td><td>Optimización de distribución de actualizaciones.</td></tr>
+    <tr><td><code>dmwappushservice</code>, <code>PcaSvc</code></td><td>Media</td><td>Seguro</td><td>Mensajes WAP push (telemetría) y Asistente de compatibilidad de programas.</td></tr>
+    <tr><td><code>WerSvc</code>, <code>diagnosticshub…</code>, <code>TrkWks</code>, <code>MapsBroker</code>, <code>RetailDemo</code>, <code>wisvc</code>, <code>WMPNetworkSvc</code>, <code>RemoteRegistry</code>, <code>Fax</code></td><td>Baja</td><td>Seguro</td><td>Informes de errores, diagnósticos, vínculos, mapas, modo tienda, Windows Insider, uso compartido de Media Player, registro remoto y fax.</td></tr>
+    <tr><td>Servicios de Xbox (4)</td><td>Baja</td><td>Moderado</td><td>Necesarios para juegos de Xbox y Game Pass.</td></tr>
+    <tr><td><code>lfsvc</code>, <code>WbioSrvc</code></td><td>Baja</td><td>Moderado</td><td>Geolocalización y biometría (huella, Windows Hello).</td></tr>
+    <tr><td><code>Spooler</code>, <code>bthserv</code>, <code>TabletInputService</code></td><td>—</td><td>Arriesgado</td><td>Impresión, Bluetooth y teclado táctil. Solo si sabes que no los usas.</td></tr>
+  </tbody>
+</table>
+
+<!-- ======================================================================= -->
+<h1 id="ajustes">6. Efectos y ajustes</h1>
+<figure>
+  <img src="img/ajustes.png" alt="Efectos y ajustes">
+  <figcaption>Figura 4. Efectos y ajustes.</figcaption>
+</figure>
+<p>Activa el interruptor de cada ajuste que quieras aplicar (o pulsa <b>Activar recomendados</b>) y pulsa <b>Aplicar cambios</b>.
+Para revertir uno, desactiva su interruptor y aplica. Si Windows ya tenía un ajuste así antes de usar el optimizador, aparece como
+«Ya aplicado» y bloqueado, porque no hay un estado original al que volver. Algunos tienen efecto tras cerrar sesión o reiniciar, y así lo indica su distintivo gris.</p>
+<table>
+  <thead><tr><th style="width:32%">Ajuste</th><th style="width:12%">Riesgo</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td colspan="3"><b>Efectos visuales</b></td></tr>
+    <tr><td>Animaciones y efectos de la interfaz</td><td>Seguro</td><td>Quita desvanecimientos, sombras y animaciones de controles. Mantiene el suavizado de fuentes y las miniaturas.</td></tr>
+    <tr><td>Animación al minimizar y maximizar</td><td>Seguro</td><td>Las ventanas aparecen y desaparecen al instante.</td></tr>
+    <tr><td>Animaciones de la barra de tareas</td><td>Seguro</td><td>Quita las animaciones de los botones de la barra.</td></tr>
+    <tr><td>Transparencias</td><td>Seguro</td><td>Menú Inicio y barra de tareas opacos.</td></tr>
+    <tr><td>Aero Peek</td><td>Seguro</td><td>Sin vista previa del escritorio en la esquina de la barra.</td></tr>
+    <tr><td>Contenido de las ventanas al arrastrarlas</td><td>Seguro</td><td>Se mueve solo el contorno de la ventana.</td></tr>
+    <tr><td>Retardo de los menús</td><td>Seguro</td><td>Los submenús se abren antes (200 ms).</td></tr>
+    <tr><td colspan="3"><b>Rendimiento</b></td></tr>
+    <tr><td>Aplicaciones en segundo plano</td><td>Moderado</td><td>Las apps de la Tienda no funcionan cuando no se usan; algunas dejarán de avisar.</td></tr>
+    <tr><td>Game Bar y grabación de juegos</td><td>Seguro</td><td>Sin grabación de juegos en segundo plano.</td></tr>
+    <tr><td>Fecha de último acceso de los archivos</td><td>Seguro</td><td>Ahorra escrituras en el disco.</td></tr>
+    <tr><td>Plan de energía de alto rendimiento</td><td>Moderado</td><td>El procesador no reduce su velocidad. En portátiles gasta más batería.</td></tr>
+    <tr><td>Hibernación</td><td>Moderado</td><td>Libera varios GB de disco, pero desactiva el inicio rápido, que en discos mecánicos acelera el encendido.</td></tr>
+    <tr><td colspan="3"><b>Privacidad y anuncios</b></td></tr>
+    <tr><td>Sugerencias, consejos y anuncios</td><td>Seguro</td><td>Sin sugerencias en Inicio ni instalación automática de apps promocionadas.</td></tr>
+    <tr><td>Identificador de publicidad</td><td>Seguro</td><td>Sin anuncios personalizados en las apps.</td></tr>
+    <tr><td>Telemetría de Windows</td><td>Seguro</td><td>Datos de diagnóstico al mínimo que permite cada edición.</td></tr>
+    <tr><td>Cortana</td><td>Seguro</td><td>Desactiva Cortana; la búsqueda sigue funcionando.</td></tr>
+  </tbody>
+</table>
+
+<!-- ======================================================================= -->
+<h1 id="tareas">7. Tareas programadas</h1>
+<figure>
+  <img src="img/tareas.png" alt="Tareas programadas">
+  <figcaption>Figura 5. Tareas programadas.</figcaption>
+</figure>
+<p>Windows ejecuta periódicamente tareas de telemetría y diagnóstico que leen y escriben en el disco aunque el servicio
+correspondiente esté parado. Pulsa <b>Marcar recomendadas</b> y <b>Desactivar marcadas</b>. Cada fila indica si la
+tarea está activa y cuándo se ejecutó por última vez. Las tareas que no existen en una versión de Windows no aparecen.</p>
+<p>Entre ellas: Evaluador de compatibilidad (una de las que más disco usa), Programa para la mejora de la experiencia del usuario,
+diagnóstico de disco, informes de errores, evaluación del sistema (WinSAT), diagnóstico de eficiencia energética, información
+del dispositivo y mapas.</p>
+<div class="consejo"><b>La desfragmentación no se toca</b>
+La tarea de optimización de unidades es necesaria en un disco duro mecánico y no aparece en la lista.</div>
+
+<!-- ======================================================================= -->
+<h1 id="programas">8. Programas</h1>
+<p>La página tiene tres secciones, que se eligen con los botones de la parte superior. También hay accesos directos a
+<b>Programas y características</b> (panel clásico de desinstalación) y a <b>Aplicaciones y características</b> (Configuración).</p>
+
+<h2 id="inicio">8.1 Programas de inicio</h2>
+<p>Lista los programas de terceros que arrancan con Windows (desde el registro y las carpetas de inicio). De cada uno muestra:</p>
+<ul>
+  <li><b>Impacto en el arranque:</b> cuántas veces ha registrado Windows que retrasó el arranque y el retraso máximo.</li>
+  <li><b>Origen:</b> si se inicia para todos los usuarios o solo para el actual.</li>
+  <li><b>Programa instalado</b> al que pertenece, con botones para <b>abrir su ubicación</b> y <b>desinstalarlo</b>.</li>
+</ul>
+<p>Desactiva el interruptor de los que no necesites al encender el equipo y pulsa <b>Aplicar cambios</b>. Los programas no se
+desinstalan y se pueden volver a activar aquí o en el Administrador de tareas.</p>
+
+<h2 id="consumo">8.2 Consumo en uso normal</h2>
+<p>Pulsa <b>Analizar (20 s)</b> mientras usas el equipo con normalidad. Se mide la CPU, la memoria y la actividad de disco de cada
+programa de terceros (sumando todos sus procesos) y se destaca con «Consumo alto» si supera el 5 % de CPU, 300 MB de RAM o 1 MB/s de disco.</p>
+
+<h2 id="apps">8.3 Apps de la Tienda</h2>
+<p>Lista las aplicaciones preinstaladas de la Tienda que se pueden eliminar, con un distintivo:</p>
+<table>
+  <thead><tr><th style="width:26%">Distintivo</th><th>Ejemplos</th></tr></thead>
+  <tbody>
+    <tr><td><span class="chip verde">Segura de eliminar</span></td><td>Noticias, El Tiempo, Solitaire, Paint 3D, Mapas, Consejos, Centro de opiniones, juegos y apps promocionadas.</td></tr>
+    <tr><td><span class="chip amarillo">Se usa a menudo</span></td><td>Fotos, Calculadora, Correo y Calendario, Cámara, Recortes, Teams.</td></tr>
+    <tr><td><span class="chip gris">Desconocida</span></td><td>Aplicaciones que no están en el catálogo: comprueba qué son antes de eliminarlas.</td></tr>
+  </tbody>
+</table>
+<p>No se muestran las aplicaciones del sistema ni las imprescindibles (Tienda, Seguridad de Windows, extensiones de imagen y vídeo, bibliotecas
+que usan otras aplicaciones). Las apps se eliminan para el usuario actual y se pueden reinstalar desde Microsoft Store. Alguna puede reaparecer tras una actualización grande de Windows.</p>
+
+<!-- ======================================================================= -->
+<h1 id="limpieza">9. Limpieza de disco</h1>
+<figure>
+  <img src="img/limpieza.png" alt="Limpieza de disco">
+  <figcaption>Figura 6. Limpieza de disco.</figcaption>
+</figure>
+<p>Al entrar se mide cuánto ocupa cada categoría. Marca lo que quieras borrar y pulsa <b>Limpiar seleccionadas</b>. Los archivos en uso se dejan.</p>
+<table>
+  <thead><tr><th style="width:36%">Categoría</th><th style="width:12%">Riesgo</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr><td>Archivos temporales del usuario y de Windows</td><td>Seguro</td><td>Solo los de más de 24 horas, para no afectar a programas en marcha.</td></tr>
+    <tr><td>Descargas de Windows Update</td><td>Seguro</td><td>Actualizaciones ya descargadas; Windows vuelve a descargar lo que necesite.</td></tr>
+    <tr><td>Caché de optimización de distribución</td><td>Seguro</td><td>Fragmentos de actualizaciones para compartir con otros equipos.</td></tr>
+    <tr><td>Volcados de memoria</td><td>Seguro</td><td>Archivos de pantallas azules y cierres inesperados.</td></tr>
+    <tr><td>Informes de errores de Windows</td><td>Seguro</td><td>Informes enviados o pendientes.</td></tr>
+    <tr><td>Caché de miniaturas</td><td>Seguro</td><td>Se regenera al abrir las carpetas.</td></tr>
+    <tr><td>Caché de los navegadores</td><td>Seguro</td><td>Edge, Chrome y Firefox. Ciérralos antes para liberar más espacio.</td></tr>
+    <tr><td>Papelera de reciclaje</td><td>Moderado</td><td>Lo que contiene ya no se podrá recuperar.</td></tr>
+    <tr><td>Componentes de actualizaciones antiguas</td><td>Moderado</td><td>Limpieza con DISM. Tarda varios minutos y después no se pueden desinstalar las actualizaciones ya instaladas.</td></tr>
+  </tbody>
+</table>
+<p>No se borra la carpeta <b>Prefetch</b>, que en un disco mecánico acelera la apertura de programas. Para la carpeta <b>Windows.old</b>
+(instalación anterior de Windows) usa el botón <b>Abrir el Liberador de espacio en disco</b>.</p>
+
+<!-- ======================================================================= -->
+<h1 id="analisis" class="sigue">10. Análisis</h1>
+<figure>
+  <img src="img/analisis.png" alt="Análisis">
+  <figcaption>Figura 7. Comparación antes y después (valores de ejemplo).</figcaption>
+</figure>
+<p>Elige la duración (30, 60 o 120 segundos) y pulsa <b>Medir ANTES</b> o <b>Medir DESPUÉS</b>. La columna <i>Cambio</i> aparece en
+verde si mejora, en rojo si empeora y en gris si la diferencia es menor del 3 %.</p>
+<table>
+  <thead><tr><th style="width:34%">Métrica</th><th>Qué mide</th></tr></thead>
   <tbody>
     <tr><td>Tiempo de arranque total</td><td>Desde que se enciende hasta que el sistema queda en reposo. Lo registra Windows unos minutos después de cada inicio.</td></tr>
     <tr><td>Tiempo hasta el escritorio</td><td>Desde que se enciende hasta que el escritorio es utilizable.</td></tr>
-    <tr><td>RAM en uso / Memoria comprometida</td><td>Memoria física ocupada y memoria total reservada (RAM + archivo de paginación).</td></tr>
+    <tr><td>RAM en uso / memoria comprometida</td><td>Memoria física ocupada y memoria total reservada.</td></tr>
     <tr><td>Uso medio de CPU</td><td>Porcentaje medio del procesador durante la medición.</td></tr>
-    <tr><td>Actividad media del disco</td><td>Porcentaje de tiempo que el disco está ocupado. Es la métrica más importante en un HDD.</td></tr>
-    <tr><td>Cola media del disco</td><td>Peticiones esperando al disco. Valores sostenidos por encima de 1–2 indican un cuello de botella.</td></tr>
-    <tr><td>Procesos / servicios en ejecución</td><td>Número medio de procesos y servicios activos.</td></tr>
+    <tr><td>Actividad media del disco</td><td>Porcentaje de tiempo que el disco está ocupado. La más importante en un HDD.</td></tr>
+    <tr><td>Cola media del disco</td><td>Peticiones esperando al disco. Por encima de 1–2 de forma sostenida indica un cuello de botella.</td></tr>
+    <tr><td>Procesos y servicios en ejecución</td><td>Número medio de procesos y servicios activos.</td></tr>
   </tbody>
 </table>
-
-<h2 id="ciclo">4.3 Ciclo guiado: medir, cambiar, reiniciar, medir</h2>
-<p>Para que la comparación sea fiable, el programa guía al usuario por este ciclo:</p>
-<ol class="pasos">
-  <li><b>Primera ejecución:</b> si no hay mediciones ni cambios, mide automáticamente el estado original (ANTES).</li>
-  <li><b>Antes de un cambio:</b> si falta la medición ANTES, o es anterior al último cambio, ofrece medir antes de aplicar.</li>
-  <li><b>Después del cambio:</b> ofrece reiniciar y programa la reapertura automática del programa un minuto después del siguiente inicio de sesión.</li>
-  <li><b>Tras reiniciar:</b> el programa se abre solo y ofrece medir DESPUÉS. Si el equipo lleva menos de 2 minutos encendido, espera con una cuenta atrás para que Windows termine de cargar.</li>
-  <li><b>Si se abre sin haber reiniciado:</b> recuerda que hay cambios pendientes y ofrece reiniciar.</li>
-</ol>
 <div class="consejo"><b>Para una medición justa</b>
-Usa siempre <i>Reiniciar</i> (no <i>Apagar</i>, que con el inicio rápido de Windows no es un arranque completo), no
-abras programas durante la medición y mide en las mismas condiciones antes y después.</div>
-
-<h2 id="programas">4.4 Pestaña Programas</h2>
-<p>Además de los servicios, muchos equipos se ralentizan por programas de terceros que se inician con Windows o
-que consumen recursos en segundo plano. Pulsa <b>Analizar programas (20 s)</b> y usa el equipo con normalidad
-mientras tanto. El resultado aparece en dos listas; las filas en <span style="background:#ffeed6;padding:0 3px">naranja</span>
-son las que conviene revisar.</p>
-<h3>Programas que se inician con Windows</h3>
-<p>Reúne lo que arranca automáticamente desde el registro (claves <i>Run</i> del equipo y del usuario) y desde las
-carpetas <i>Inicio</i>. Los componentes de Windows no se muestran.</p>
-<table>
-  <thead><tr><th style="width:28%">Columna</th><th>Significado</th></tr></thead>
-  <tbody>
-    <tr><td>Impacto en el arranque</td><td>Cuántas veces ha registrado Windows que ese programa <b>retrasó el arranque</b> y el retraso máximo, según su propio diagnóstico de rendimiento (eventos 101). Se resaltan en naranja.</td></tr>
-    <tr><td>Estado</td><td>Activado o Desactivado. Es el mismo estado que muestra la pestaña Inicio del Administrador de tareas.</td></tr>
-    <tr><td>Origen</td><td>Dónde está configurado el inicio. «Detectado por Windows (otro origen)» indica un programa lento que se lanza de otra forma (por ejemplo, desde un servicio); se puede desinstalar pero no desactivar desde aquí.</td></tr>
-    <tr><td>Programa instalado</td><td>Programa de «Aplicaciones y características» al que pertenece, si se ha podido identificar.</td></tr>
-  </tbody>
-</table>
-<h3>Consumo en uso normal</h3>
-<p>Mide durante 20 segundos la CPU, la memoria y la actividad de disco de cada programa de terceros (agrupando
-todos sus procesos). Se resalta en naranja si supera alguno de estos umbrales: <b>CPU ≥ 5 %</b>,
-<b>RAM ≥ 300 MB</b> o <b>disco ≥ 1 MB/s</b>.</p>
-<h3>Acciones</h3>
-<table>
-  <thead><tr><th style="width:28%">Botón</th><th>Qué hace</th></tr></thead>
-  <tbody>
-    <tr><td>Desactivar del inicio</td><td>El programa deja de arrancar con Windows, pero <b>no se desinstala</b>. Es reversible con <i>Activar en el inicio</i> o desde el Administrador de tareas. Forma parte del ciclo guiado (4.3): ofrece medir antes y reiniciar después.</td></tr>
-    <tr><td>Desinstalar programa…</td><td>Abre el <b>desinstalador del propio programa</b>, tras pedir confirmación. Si parece un antivirus, un controlador o software del fabricante del equipo, muestra un aviso adicional. <b>No se puede deshacer</b> desde el optimizador.</td></tr>
-    <tr><td>Abrir ubicación</td><td>Abre la carpeta del ejecutable en el Explorador.</td></tr>
-    <tr><td>Programas y características</td><td>Abre el panel clásico de Windows para desinstalar o cambiar programas (<code>appwiz.cpl</code>).</td></tr>
-    <tr><td>Aplicaciones y características</td><td>Abre la configuración de Windows. Úsalo para las aplicaciones de la Tienda, que no tienen desinstalador propio.</td></tr>
-  </tbody>
-</table>
-<div class="consejo"><b>Desactivar antes que desinstalar</b>
-Si un programa solo molesta porque se inicia con Windows, desactívalo del inicio: se puede seguir usando
-cuando se necesite. Desinstala solo lo que no se use.</div>
-<div class="nota"><b>Cuenta de usuario</b>
-Las entradas «usuario actual» corresponden a la cuenta con la que se abrió el optimizador. Si los permisos de
-administrador se conceden con una cuenta distinta a la del usuario habitual, sus programas de inicio no aparecerán:
-en ese caso, revísalos desde el Administrador de tareas de ese usuario.</div>
+Usa siempre <i>Reiniciar</i> (no <i>Apagar</i>, que con el inicio rápido no es un arranque completo), espera 2–3 minutos tras el inicio,
+no abras programas durante la medición y mide en las mismas condiciones antes y después.</div>
 
 <!-- ======================================================================= -->
-<h1 id="despliegue">5. Despliegue en varios equipos</h1>
-<p>El mismo <code>OptimizadorServicios.exe</code> funciona sin ventanas cuando recibe parámetros. Esto permite
-aplicar la configuración en todos los equipos de una organización mediante una directiva de grupo, Intune,
-SCCM, PDQ Deploy o cualquier herramienta capaz de ejecutar un programa como administrador o SYSTEM.</p>
-
-<h2 id="planificacion">5.1 Planificación</h2>
-<ol class="pasos">
-  <li><b>Elige el perfil</b> según el uso de los equipos (ver capítulo 3). Ante la duda, empieza por <code>conservador</code> u <code>oficina</code>.</li>
-  <li><b>Prueba en un equipo piloto</b> representativo con la interfaz gráfica: mide ANTES, aplica el perfil, reinicia y mide DESPUÉS. Comprueba que las aplicaciones de uso habitual (impresión, búsqueda, Outlook, software educativo…) siguen funcionando.</li>
-  <li><b>Despliega en un grupo reducido</b> (un aula, un departamento) durante unos días.</li>
-  <li><b>Amplía</b> al resto de equipos y revisa los registros (5.8).</li>
-</ol>
-
-<h2 id="cli">5.2 Referencia de la línea de comandos</h2>
-<pre>OptimizadorServicios.exe /aplicar:&lt;perfil | archivo.txt | Serv1,Serv2&gt; [/punto] [/reiniciar] [/log:&lt;ruta&gt;]
-OptimizadorServicios.exe /restablecer [/reiniciar] [/log:&lt;ruta&gt;]
-OptimizadorServicios.exe /estado [/log:&lt;ruta&gt;]
-OptimizadorServicios.exe /perfiles
-OptimizadorServicios.exe /ayuda</pre>
+<h1 id="deshacer" class="sigue">11. Cómo deshacer los cambios</h1>
 <table>
-  <thead><tr><th style="width:24%">Parámetro</th><th>Descripción</th></tr></thead>
+  <thead><tr><th style="width:26%">Sección</th><th>Cómo se deshace</th></tr></thead>
   <tbody>
-    <tr><td><code>/aplicar:&lt;valor&gt;</code></td><td>Deshabilita los servicios indicados. El valor puede ser un <b>perfil</b> (<code>recomendado</code>, <code>conservador</code>, <code>oficina</code>, <code>aulas</code>), la ruta a un <b>archivo .txt</b> (5.7) o una <b>lista separada por comas</b>. Solo se admiten servicios del catálogo. Los servicios ya deshabilitados se omiten, así que se puede ejecutar en cada arranque.</td></tr>
-    <tr><td><code>/restablecer</code></td><td>Devuelve todos los servicios modificados a su estado original.</td></tr>
-    <tr><td><code>/estado</code></td><td>Lista los servicios del catálogo con su tipo de inicio, estado y si han sido modificados. Útil para inventario.</td></tr>
-    <tr><td><code>/perfiles</code></td><td>Muestra los perfiles y los servicios que incluye cada uno.</td></tr>
-    <tr><td><code>/punto</code></td><td>Crea un punto de restauración antes de aplicar (requiere la Protección del sistema activada).</td></tr>
-    <tr><td><code>/reiniciar</code></td><td>Reinicia el equipo 60 segundos después, <b>solo si se ha cambiado algo</b>. El usuario ve un aviso.</td></tr>
-    <tr><td><code>/log:&lt;ruta&gt;</code></td><td>Copia cada línea del registro, con el nombre del equipo, a otro archivo. Admite variables como <code>%COMPUTERNAME%</code> y rutas de red.</td></tr>
+    <tr><td>Servicios</td><td>Botón <b>Restablecer todo</b>: cada servicio vuelve a su tipo de inicio original.</td></tr>
+    <tr><td>Efectos y ajustes</td><td>Desactivar el interruptor y aplicar, o <b>Restablecer todo</b>.</td></tr>
+    <tr><td>Tareas programadas</td><td><b>Restablecer todo</b>: cada tarea vuelve a su estado original.</td></tr>
+    <tr><td>Programas de inicio</td><td>Volver a activar el interruptor y aplicar (o desde el Administrador de tareas).</td></tr>
+    <tr><td>Apps de la Tienda</td><td>Reinstalarlas desde Microsoft Store.</td></tr>
+    <tr><td>Programas desinstalados</td><td>Volver a instalarlos.</td></tr>
+    <tr><td>Limpieza de disco</td><td>No se puede deshacer.</td></tr>
+    <tr><td>Todo lo anterior</td><td>Si se creó, el <b>punto de restauración</b> de Windows (Panel de control › Recuperación).</td></tr>
   </tbody>
 </table>
-<h3>Códigos de salida</h3>
-<table>
-  <thead><tr><th style="width:12%">Código</th><th>Significado</th></tr></thead>
-  <tbody>
-    <tr><td class="c-centro">0</td><td>Correcto (incluye «sin cambios: todo estaba ya aplicado»).</td></tr>
-    <tr><td class="c-centro">1</td><td>Algún servicio no se pudo cambiar. El detalle está en el registro.</td></tr>
-    <tr><td class="c-centro">2</td><td>Parámetros no válidos.</td></tr>
-  </tbody>
-</table>
-<div class="nota"><b>Ejecutarlo desde cmd</b>
-El programa es una aplicación de ventanas, así que <code>cmd</code> no espera a que termine. Usa
-<code>start "" /wait</code> para esperar y obtener el código de salida en <code>%errorlevel%</code>. Desde una
-consola sin permisos de administrador, Windows mostrará el aviso UAC.</div>
-<h3>Ejemplos</h3>
-<pre><span class="c">rem Aplicar el perfil de oficina y guardar el registro en una carpeta de red</span>
-start "" /wait OptimizadorServicios.exe /aplicar:oficina /log:"\\servidor\registros\%COMPUTERNAME%.log"
-
-<span class="c">rem Aplicar dos servicios concretos con punto de restauración y reinicio</span>
-start "" /wait OptimizadorServicios.exe /aplicar:SysMain,DiagTrack /punto /reiniciar
-
-<span class="c">rem Revertir todo</span>
-start "" /wait OptimizadorServicios.exe /restablecer
-
-<span class="c">rem Inventario del estado actual</span>
-start "" /wait OptimizadorServicios.exe /estado /log:"\\servidor\inventario\%COMPUTERNAME%.txt"</pre>
-
-<h2 id="compartidas">5.3 Preparar las carpetas compartidas</h2>
-<p>Cuando el programa se ejecuta como SYSTEM (scripts de inicio de GPO, Intune, SCCM), accede a la red con la
-<b>cuenta del equipo</b>, no con la de un usuario. Por eso hay que dar permisos al grupo <b>Equipos del dominio</b>
-(<i>Domain Computers</i>):</p>
-<table>
-  <thead><tr><th style="width:34%">Carpeta (ejemplo)</th><th style="width:22%">Contenido</th><th>Permisos para «Equipos del dominio»</th></tr></thead>
-  <tbody>
-    <tr><td><code>\\servidor\software</code></td><td><code>OptimizadorServicios.exe</code> y perfiles .txt</td><td><b>Lectura</b> (compartir y NTFS).</td></tr>
-    <tr><td><code>\\servidor\registros\optimizador</code></td><td>Un registro por equipo</td><td><b>Modificar</b> (compartir: cambiar; NTFS: modificar).</td></tr>
-  </tbody>
-</table>
-<div class="consejo"><b>Alternativa sin carpeta de red</b>
-También puedes copiar el <code>.exe</code> dentro de la propia GPO (se replica por SYSVOL) o en cada equipo, por
-ejemplo en <code>C:\ProgramData\OptimizadorServicios\</code>, y usar esa ruta local en el script.</div>
-
-<h2 id="gpo">5.4 Despliegue con directiva de grupo (GPO)</h2>
-<p>Es el método recomendado en dominios de Active Directory. El script se ejecuta como SYSTEM en cada arranque,
-antes de que el usuario inicie sesión, sin avisos de UAC.</p>
-<h3>1. Preparar el script</h3>
-<p>Edita <code>despliegue\aplicar.cmd</code> y ajusta las tres variables de configuración:</p>
-<pre>set "EXE=\\servidor\software\OptimizadorServicios.exe"
-set "PERFIL=aulas"
-set "LOG=\\servidor\registros\optimizador\%COMPUTERNAME%.log"
-set "OPCIONES="</pre>
-<p><code>PERFIL</code> puede ser un perfil o la ruta UNC a un archivo .txt. En <code>OPCIONES</code> puedes añadir
-<code>/reiniciar</code> si quieres que el equipo se reinicie automáticamente la primera vez que se apliquen
-cambios (en los siguientes arranques no reinicia, porque ya no hay nada que cambiar).</p>
-<h3>2. Crear la GPO</h3>
-<ol class="pasos">
-  <li>Abre la <b>Consola de administración de directivas de grupo</b> (<code>gpmc.msc</code>).</li>
-  <li>Haz clic derecho sobre la unidad organizativa que contiene los <b>equipos</b> (no los usuarios) y elige <i>Crear un GPO en este dominio y vincularlo aquí</i>. Ponle un nombre, por ejemplo <i>Optimizador de servicios - Aulas</i>.</li>
-  <li>Edita la GPO y ve a:<br><span class="ruta">Configuración del equipo › Directivas › Configuración de Windows › Scripts (inicio o apagado) › Inicio</span></li>
-  <li>Pulsa <b>Mostrar archivos…</b> y copia ahí <code>aplicar.cmd</code>. Cierra la carpeta.</li>
-  <li>Pulsa <b>Agregar…</b>, selecciona <code>aplicar.cmd</code> y acepta.</li>
-  <li>Opcional pero recomendable: en <span class="ruta">Configuración del equipo › Directivas › Plantillas administrativas › Sistema › Inicio de sesión</span>, habilita la directiva para esperar siempre a la red en el inicio del equipo y el inicio de sesión
-(en inglés, <i>Always wait for the network at computer startup and logon</i>), para que la carpeta compartida esté disponible cuando se ejecute el script.</li>
-</ol>
-<h3>3. Aplicar y comprobar</h3>
-<ol class="pasos">
-  <li>En un equipo de la unidad organizativa, ejecuta <code>gpupdate /force</code> como administrador y reinicia (o espera al siguiente reinicio).</li>
-  <li>Comprueba que la GPO se aplica: <code>gpresult /r /scope computer</code> debe mostrarla en <i>Objetos de directiva de grupo aplicados</i>.</li>
-  <li>Revisa el registro del equipo en la carpeta de registros o en <code>C:\ProgramData\OptimizadorServicios\registro.log</code>.</li>
-  <li>Los servicios que no pudieron detenerse durante el arranque quedan deshabilitados y no volverán a arrancar en el siguiente reinicio.</li>
-</ol>
-<div class="nota"><b>Se puede dejar la GPO activa de forma permanente</b>
-En cada arranque el programa comprueba los servicios: los que ya están deshabilitados se omiten (aparecen como
-«Ya deshabilitado» en el registro) y los que Windows haya vuelto a activar —por ejemplo, tras una actualización
-importante— se vuelven a deshabilitar.</div>
-
-<h2 id="intune">5.5 Despliegue con Intune</h2>
-<p>Para equipos gestionados con Microsoft Intune, lo más práctico es empaquetar el programa como
-<b>aplicación Win32</b>, que se ejecuta en contexto de sistema:</p>
-<ol class="pasos">
-  <li>Crea una carpeta con <code>OptimizadorServicios.exe</code> (y el .txt si usas un perfil personalizado).</li>
-  <li>Empaquétala con <b>Microsoft Win32 Content Prep Tool</b>: <code>IntuneWinAppUtil.exe -c &lt;carpeta&gt; -s OptimizadorServicios.exe -o &lt;salida&gt;</code></li>
-  <li>En el centro de administración de Intune: <span class="ruta">Aplicaciones › Windows › Agregar › Aplicación de Windows (Win32)</span> y sube el archivo <code>.intunewin</code>.</li>
-  <li>Configura el programa:
-    <table style="margin-top:2mm">
-      <tbody>
-        <tr><td style="width:30%">Comando de instalación</td><td><code>OptimizadorServicios.exe /aplicar:oficina</code></td></tr>
-        <tr><td>Comando de desinstalación</td><td><code>OptimizadorServicios.exe /restablecer</code></td></tr>
-        <tr><td>Comportamiento de instalación</td><td>Sistema</td></tr>
-        <tr><td>Reinicio del dispositivo</td><td>Determinar el comportamiento en función de los códigos de retorno (o «Intune forzará un reinicio obligatorio» si quieres reinicio inmediato)</td></tr>
-        <tr><td>Códigos de retorno</td><td>0 = correcto; 1 = error</td></tr>
-      </tbody>
-    </table>
-  </li>
-  <li>Regla de detección: <b>archivo</b>, ruta <code>C:\ProgramData\OptimizadorServicios</code>, archivo <code>backup.json</code>, método «El archivo o la carpeta existe».</li>
-  <li>Asigna la aplicación como <b>Requerida</b> a un grupo de dispositivos.</li>
-</ol>
-<div class="aviso"><b>Desinstalar en Intune revierte los cambios</b>
-Si cambias la asignación a «Desinstalar», Intune ejecutará <code>/restablecer</code> en los equipos y los servicios
-volverán a su estado original.</div>
-
-<h2 id="otras">5.6 Otras herramientas (SCCM, PDQ, manual)</h2>
-<ul>
-  <li><b>Configuration Manager (SCCM/MECM):</b> crea una aplicación o paquete con el <code>.exe</code>; línea de comandos <code>OptimizadorServicios.exe /aplicar:&lt;perfil&gt;</code>, ejecución «tanto si el usuario ha iniciado sesión como si no», con derechos administrativos. Misma regla de detección que en Intune.</li>
-  <li><b>PDQ Deploy:</b> paso «Install» con el <code>.exe</code> y los parámetros, ejecutando como «Deploy User» o «Local System». Códigos de éxito: 0.</li>
-  <li><b>Tarea programada:</b> <code>aplicar.cmd</code> puede programarse como tarea al inicio del sistema, ejecutada como SYSTEM.</li>
-  <li><b>Pocos equipos sin dominio:</b> copia el <code>.exe</code> en un USB y ejecútalo con la interfaz gráfica, o usa <code>/aplicar</code> desde una consola de administrador.</li>
-</ul>
-
-<h2 id="personalizado">5.7 Perfiles personalizados</h2>
-<p>Si ningún perfil se ajusta, crea un archivo de texto con un servicio por línea. Todo lo que vaya detrás de
-<code>#</code> se ignora. Ejemplo (<code>despliegue\perfil-personalizado.txt</code>):</p>
-<pre><span class="c"># Perfil para la sala de profesores</span>
-SysMain          <span class="c"># Superfetch: lo que más penaliza en discos HDD</span>
-DiagTrack        <span class="c"># Telemetría</span>
-dmwappushservice
-WerSvc
-Fax
-XblAuthManager
-XblGameSave</pre>
-<p>Úsalo con <code>/aplicar:\\servidor\software\perfil-profesores.txt</code>. Los nombres que no estén en el catálogo
-se omiten y quedan anotados en el registro como «Omitido».</p>
-
-<h2 id="verificacion">5.8 Verificación e inventario</h2>
-<h3>Registro de cada equipo</h3>
-<p>Con <code>/log</code>, cada equipo escribe su resultado en la carpeta compartida. Ejemplo de un primer arranque:</p>
-<pre>2026-10-30 08:02:11  AULA2-PC07  Perfil: Aulas / equipos compartidos
-2026-10-30 08:02:12  AULA2-PC07  Deshabilitado: SysMain
-2026-10-30 08:02:13  AULA2-PC07  Deshabilitado: WSearch
-2026-10-30 08:02:13  AULA2-PC07  Deshabilitado: DiagTrack
-...
-2026-10-30 08:02:20  AULA2-PC07  Aplicado: 21 servicios deshabilitados, 0 errores.</pre>
-<p>Y en los arranques siguientes:</p>
-<pre>2026-10-31 08:01:54  AULA2-PC07  Ya deshabilitado: SysMain
-...
-2026-10-31 08:01:55  AULA2-PC07  Sin cambios: todo estaba ya aplicado.</pre>
-<p>Para localizar rápidamente los equipos con problemas, busca la palabra <code>ERROR</code> en la carpeta de registros:</p>
-<pre>findstr /s /i /m "ERROR" \\servidor\registros\optimizador\*.log</pre>
-<h3>Inventario del estado</h3>
-<p><code>/estado</code> genera una tabla por equipo, útil para auditorías:</p>
-<pre>SERVICIO                                   INICIO         ESTADO         CAMBIADO
-SysMain                                    Deshabilitado  Detenido       Sí
-WSearch                                    Deshabilitado  Detenido       Sí
-Spooler                                    Automático     En ejecución
-...</pre>
-<h3>Medir el impacto en la organización</h3>
-<p>Las mediciones de la pestaña Análisis no se realizan en el modo de línea de comandos. Para cuantificar la
-mejora, mide en uno o varios equipos piloto con la interfaz gráfica (capítulo 4) antes de desplegar.</p>
-
-<h2 id="revertir">5.9 Revertir un despliegue</h2>
-<ol class="pasos">
-  <li>En la GPO, <b>quita</b> <code>aplicar.cmd</code> de los scripts de inicio (si no, volvería a aplicar los cambios en cada arranque).</li>
-  <li>Añade <code>despliegue\restablecer.cmd</code> como script de inicio, con las mismas rutas.</li>
-  <li>Tras un reinicio de cada equipo, revisa los registros: deben mostrar «Restablecido: …».</li>
-  <li>Cuando todos los equipos estén restablecidos, elimina la GPO.</li>
-</ol>
-<p>En Intune basta con cambiar la asignación a <b>Desinstalar</b> (ver 5.5).</p>
+<p>Después de restablecer, reinicia el equipo para que los cambios tengan efecto completo.</p>
 
 <!-- ======================================================================= -->
-<h1 id="problemas">6. Solución de problemas</h1>
+<h1 id="problemas">12. Solución de problemas</h1>
 <table>
   <thead><tr><th style="width:28%">Problema</th><th style="width:30%">Causa probable</th><th>Solución</th></tr></thead>
   <tbody>
-    <tr><td>«Windows protegió su PC» al abrirlo</td><td>El ejecutable no está firmado.</td><td><i>Más información</i> → <i>Ejecutar de todas formas</i>. En organizaciones, firmarlo o permitirlo en el antivirus.</td></tr>
-    <tr><td>El antivirus lo bloquea</td><td>Cambia la configuración de servicios con permisos de administrador.</td><td>Añadir una exclusión para el ejecutable o firmarlo.</td></tr>
-    <tr><td>El script de GPO no se ejecuta</td><td>La GPO está vinculada a una OU de usuarios, o el equipo no tiene permisos en la carpeta compartida.</td><td>Vincularla a la OU de equipos; dar lectura a «Equipos del dominio»; comprobar con <code>gpresult /r /scope computer</code>.</td></tr>
-    <tr><td>No aparece el registro en la carpeta de red</td><td>Falta permiso de escritura para la cuenta del equipo, o la red no estaba lista.</td><td>Dar «Modificar» a «Equipos del dominio»; habilitar la espera a la red (ver 5.4). El registro local en <code>C:\ProgramData\OptimizadorServicios</code> se escribe siempre.</td></tr>
-    <tr><td>Un servicio aparece en naranja / «aún en ejecución»</td><td>No se detuvo en 20 segundos (frecuente en SysMain con HDD).</td><td>Normal: está deshabilitado y no arrancará tras reiniciar.</td></tr>
-    <tr><td>Un servicio vuelve a estar activo</td><td>Algunas actualizaciones de Windows restauran servicios (p. ej. <code>DoSvc</code>).</td><td>Mantener la GPO activa: lo vuelve a deshabilitar en el siguiente arranque.</td></tr>
-    <tr><td>La búsqueda de Outlook o del Explorador es muy lenta</td><td>Se desactivó <code>WSearch</code>.</td><td>Usar el perfil <code>oficina</code> o restablecer.</td></tr>
-    <tr><td>No se puede imprimir</td><td>Se desactivó <code>Spooler</code> manualmente.</td><td>Restablecer, o volver a ponerlo en Automático desde <code>services.msc</code>.</td></tr>
-    <tr><td>No se abre solo tras reiniciar</td><td>No se pudo crear la tarea programada (se anota en el registro).</td><td>Abrirlo manualmente: ofrecerá igualmente medir DESPUÉS.</td></tr>
-    <tr><td>El tiempo de arranque aparece como «n/d»</td><td>Windows todavía no ha registrado el arranque, o se usó «Apagar» en lugar de «Reiniciar».</td><td>Esperar unos minutos tras el inicio y repetir la medición; usar «Reiniciar».</td></tr>
-    <tr><td>Un programa aparece como «No identificado»</td><td>No figura en el registro de desinstalación o está en una carpeta compartida con otros.</td><td>Usar «Abrir ubicación» para identificarlo y desinstalarlo desde «Aplicaciones y características».</td></tr>
-    <tr><td>«Impacto en el arranque» siempre dice «Sin retrasos registrados»</td><td>Windows no ha detectado arranques lentos, o el equipo se reinstaló hace poco.</td><td>Normal. Para juzgar el consumo, fíjate en la lista de uso normal.</td></tr>
-    <tr><td>«Restablecer» no hace nada</td><td>No hay copia de seguridad (no se cambió nada, o se borró la carpeta de datos).</td><td>Si se borró, restaurar desde un punto de restauración o ajustar los servicios en <code>services.msc</code>.</td></tr>
+    <tr><td>«Windows protegió su PC» al abrirlo</td><td>El ejecutable no está firmado.</td><td><i>Más información</i> → <i>Ejecutar de todas formas</i>.</td></tr>
+    <tr><td>El antivirus lo bloquea</td><td>Cambia la configuración de Windows con permisos de administrador.</td><td>Añadir una excepción para el ejecutable.</td></tr>
+    <tr><td>Un servicio aparece «en ejecución hasta reiniciar»</td><td>No se detuvo en 20 segundos (frecuente en SysMain con HDD).</td><td>Normal: está deshabilitado y no arrancará tras reiniciar.</td></tr>
+    <tr><td>Un servicio vuelve a estar activo</td><td>Algunas actualizaciones de Windows restauran servicios (por ejemplo, DoSvc).</td><td>Volver a desactivarlo.</td></tr>
+    <tr><td>Un ajuste aparece «Ya aplicado» y bloqueado</td><td>Windows ya estaba configurado así antes de usar el optimizador.</td><td>Normal: no hay estado original al que volver.</td></tr>
+    <tr><td>La búsqueda de Outlook o del Explorador es lenta</td><td>Se desactivó <code>WSearch</code>.</td><td>Usar el perfil Oficina o restablecer los servicios.</td></tr>
+    <tr><td>No se puede imprimir</td><td>Se desactivó <code>Spooler</code>.</td><td>Restablecer los servicios.</td></tr>
+    <tr><td>El Correo o el Calendario no avisan</td><td>Se desactivaron las aplicaciones en segundo plano.</td><td>Revertir ese ajuste.</td></tr>
+    <tr><td>El equipo tarda más en encender</td><td>Se desactivó la hibernación, que también quita el inicio rápido.</td><td>Revertir el ajuste Hibernación.</td></tr>
+    <tr><td>No se abre solo tras reiniciar</td><td>No se pudo crear la tarea de reapertura (se anota en el registro).</td><td>Abrirlo manualmente: ofrecerá igualmente medir DESPUÉS.</td></tr>
+    <tr><td>El tiempo de arranque aparece como «n/d»</td><td>Windows aún no ha registrado el arranque, o se usó «Apagar».</td><td>Esperar unos minutos y repetir la medición; usar «Reiniciar».</td></tr>
+    <tr><td>La limpieza libera menos de lo previsto</td><td>Había archivos en uso.</td><td>Cerrar los programas (sobre todo los navegadores) y repetir, o reiniciar antes.</td></tr>
+    <tr><td>Un programa aparece como «no identificado»</td><td>No figura en el registro de desinstalación.</td><td>Abrir su ubicación y desinstalarlo desde Programas y características.</td></tr>
   </tbody>
 </table>
 
 <!-- ======================================================================= -->
-<h1 id="consola" class="sigue">7. Versión de consola (PowerShell)</h1>
-<p><code>Optimizar-Servicios.ps1</code> es una versión de consola con menú, para quien prefiera no usar el ejecutable.
-Se abre con <code>Optimizar-Servicios.bat</code> (pide permisos de administrador automáticamente).</p>
+<h1 id="anexo" class="sigue">Anexo. Referencia rápida</h1>
 <table>
-  <thead><tr><th style="width:22%">Tecla</th><th>Acción</th></tr></thead>
+  <thead><tr><th style="width:40%">Elemento</th><th>Ubicación</th></tr></thead>
   <tbody>
-    <tr><td><code>1,3,5-8</code></td><td>Marcar o desmarcar servicios por número o rango.</td></tr>
-    <tr><td><code>T</code> / <code>N</code></td><td>Marcar los recomendados / desmarcar todos.</td></tr>
-    <tr><td><code>D</code></td><td>Desactivar los marcados (con opción de punto de restauración).</td></tr>
-    <tr><td><code>R</code></td><td>Restablecer todos los cambios.</td></tr>
-    <tr><td><code>S</code></td><td>Salir.</td></tr>
-  </tbody>
-</table>
-<p>Comparte la copia de seguridad con el ejecutable, por lo que los cambios hechos con una versión se pueden
-restablecer con la otra. No incluye mediciones, perfiles ni modo de despliegue.</p>
-
-<!-- ======================================================================= -->
-<h1 id="anexo">Anexo. Referencia rápida</h1>
-<h3>Comandos</h3>
-<table>
-  <thead><tr><th style="width:50%">Quiero…</th><th>Comando</th></tr></thead>
-  <tbody>
-    <tr><td>Usar la interfaz gráfica</td><td><code>OptimizadorServicios.exe</code></td></tr>
-    <tr><td>Aplicar un perfil</td><td><code>OptimizadorServicios.exe /aplicar:oficina</code></td></tr>
-    <tr><td>Aplicar una lista propia</td><td><code>OptimizadorServicios.exe /aplicar:mi-perfil.txt</code></td></tr>
-    <tr><td>Aplicar y reiniciar si hace falta</td><td><code>OptimizadorServicios.exe /aplicar:aulas /reiniciar</code></td></tr>
-    <tr><td>Revertir todo</td><td><code>OptimizadorServicios.exe /restablecer</code></td></tr>
-    <tr><td>Ver el estado</td><td><code>OptimizadorServicios.exe /estado</code></td></tr>
-    <tr><td>Ver los perfiles</td><td><code>OptimizadorServicios.exe /perfiles</code></td></tr>
-    <tr><td>Guardar el registro en la red</td><td><code>/log:"\\servidor\registros\%COMPUTERNAME%.log"</code></td></tr>
-  </tbody>
-</table>
-<h3>Ubicaciones</h3>
-<table>
-  <thead><tr><th style="width:50%">Elemento</th><th>Ubicación</th></tr></thead>
-  <tbody>
-    <tr><td>Datos, copia de seguridad y registro</td><td><code>C:\ProgramData\OptimizadorServicios\</code></td></tr>
+    <tr><td>Datos, copias de seguridad y registro</td><td><code>C:\ProgramData\OptimizadorServicios\</code></td></tr>
     <tr><td>Tarea de reapertura tras reiniciar</td><td>Programador de tareas: <code>OptimizadorServicios_MedirDespues</code> (se borra sola)</td></tr>
-    <tr><td>Script de inicio por GPO</td><td>Configuración del equipo › Directivas › Configuración de Windows › Scripts › Inicio</td></tr>
+    <tr><td>Código fuente y descargas</td><td>github.com/jcmunera/optimizador-servicios</td></tr>
   </tbody>
 </table>
-<h3>Recompilar el ejecutable</h3>
-<pre>powershell -ExecutionPolicy Bypass -File build.ps1</pre>
-<p>Usa el compilador de C# incluido en .NET Framework 4; no requiere Visual Studio.</p>
-
 </body>
 </html>

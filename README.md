@@ -4,8 +4,9 @@ Herramienta portable para Windows 10 que mejora el rendimiento de equipos modest
 disco duro mecánico) desactivando de forma **reversible** servicios, efectos visuales, ajustes y
 tareas programadas, y que **mide** el efecto antes y después.
 
-> La versión 3 está en desarrollo. La última versión estable es la
-> [2.0](../../releases/tag/v2.0); las versiones preliminares de la 3 están en [Releases](../../releases).
+## Descarga
+
+El ejecutable y el manual en PDF están en la última versión de [Releases](../../releases/latest).
 
 ## Características
 
@@ -16,6 +17,9 @@ tareas programadas, y que **mide** el efecto antes y después.
 - **Efectos y ajustes:** animaciones, transparencias, aplicaciones en segundo plano, Game Bar,
   plan de energía, hibernación, anuncios y telemetría. Cada ajuste se puede revertir.
 - **Tareas programadas:** desactiva las tareas de telemetría y diagnóstico que despiertan el disco.
+- **Programas:** programas de inicio con su impacto en el arranque, consumo de cada programa y
+  eliminación de aplicaciones preinstaladas de la Tienda.
+- **Limpieza de disco:** temporales, restos de Windows Update, volcados de memoria, cachés y papelera.
 - **Análisis:** tiempo de arranque, RAM, CPU, actividad y cola del disco, antes y después de los
   cambios, con un ciclo guiado: medir, cambiar, reiniciar y volver a medir.
 - **Interfaz:** estilo Fluent con tema claro u oscuro según Windows.
@@ -39,9 +43,10 @@ powershell -ExecutionPolicy Bypass -File docs\build-manual.ps1  # genera el manu
 |---|---|
 | `src/Nucleo.cs` | Servicios, copias de seguridad, mediciones y análisis de programas |
 | `src/Ajustes.cs`, `src/Tareas.cs` | Ajustes reversibles y tareas programadas |
+| `src/AppsTienda.cs`, `src/Limpieza.cs` | Apps de la Tienda y limpieza de disco |
 | `src/InfoEquipo.cs` | Información del equipo para el Panel |
 | `src/Ui/` | Interfaz WPF: tema, ventana principal y páginas |
-| `docs/manual/` | Manual en HTML (pendiente de actualizar a la versión 3) |
+| `docs/manual/` | Manual en HTML e imágenes (el PDF se genera con `docs\build-manual.ps1`) |
 
 ## Licencia
 
