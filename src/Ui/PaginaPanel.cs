@@ -157,6 +157,9 @@ class PaginaPanel : UserControl
         if (info.DiscoLibrePct < 15)
             Recomendacion("Rojo", "", "Poco espacio libre en " + info.Unidad + " (" + info.DiscoLibreGB.ToString("F1") +
                           " GB). Windows se ralentiza con menos de un 15 % libre.", "Ir a Limpieza", () => v.Ir("limpieza"));
+        if (Almacen.LeerBackup().Count == 0 && global::Ajustes.Cambiados == 0)
+            Recomendacion("Azul", "", "Optimiza el equipo en un solo paso eligiendo un perfil (Aula, Oficina, Doméstico o Conservador).",
+                          "Ir a Modo perfil", () => v.Ir("perfil"));
         if (recomendaciones.Children.Count == 0)
             Recomendacion("Verde", "", "El equipo no muestra problemas evidentes.", null, null);
     }

@@ -155,7 +155,7 @@ Desde cmd usa 'start """" /wait OptimizadorServicios.exe ...' para esperar y obt
 
         if (punto) Operaciones.CrearPuntoRestauracion(Salida);
         foreach (string n in pendientes) Operaciones.Desactivar(n, Salida);
-        Almacen.GuardarEstado(new Estado { UltimoCambio = DateTime.Now.ToString("o") });
+        Almacen.MarcarCambio();
         Salida("Aplicado: " + (pendientes.Count - errores) + " servicios deshabilitados, " + errores + " errores.");
 
         if (reiniciar) { Salida("Reiniciando el equipo en 60 s."); Sistema.Reiniciar(60); }
@@ -167,7 +167,7 @@ Desde cmd usa 'start """" /wait OptimizadorServicios.exe ...' para esperar y obt
         int cambiados = Almacen.LeerBackup().Count;
         if (cambiados == 0) { Salida("No hay cambios que restablecer."); return 0; }
         Operaciones.Restaurar(Salida);
-        Almacen.GuardarEstado(new Estado { UltimoCambio = DateTime.Now.ToString("o") });
+        Almacen.MarcarCambio();
         Salida("Restablecido: " + (cambiados - errores) + " servicios, " + errores + " errores.");
 
         if (reiniciar) { Salida("Reiniciando el equipo en 60 s."); Sistema.Reiniciar(60); }

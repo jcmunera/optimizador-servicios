@@ -14,12 +14,14 @@ using System.Windows.Media;
 
 class VentanaPrincipal : Window
 {
-    public const string Version = "3.1";
+    public const string Version = "3.2";
 
     readonly ContentControl contenido = new ContentControl();
     readonly StackPanel menu = new StackPanel();
     readonly TextBlock txtEstado;
     readonly ProgressBar barraEstado;
+    readonly Button btnCancelar;
+    volatile bool cancelar;     // se marca con el botón «Cancelar» de la barra de estado
     readonly Dictionary<string, RadioButton> botonesMenu = new Dictionary<string, RadioButton>();
     readonly Dictionary<string, Func<FrameworkElement>> fabricas = new Dictionary<string, Func<FrameworkElement>>();
     readonly Dictionary<string, FrameworkElement> paginas = new Dictionary<string, FrameworkElement>();
@@ -43,6 +45,7 @@ class VentanaPrincipal : Window
         marca.Margin = new Thickness(20, 22, 12, 22);
         menu.Children.Add(marca);
         AgregarPagina("panel", "Panel", "", () => new PaginaPanel(this));
+        AgregarPagina("perfil", "Modo perfil", "", () => new PaginaPerfil(this));
         AgregarPagina("servicios", "Servicios", "", () => new PaginaServicios(this));
         AgregarPagina("ajustes", "Efectos y ajustes", "", () => new PaginaAjustes(this));
         AgregarPagina("tareas", "Tareas programadas", "", () => new PaginaTareas(this));
@@ -64,8 +67,12 @@ class VentanaPrincipal : Window
         txtEstado.TextTrimming = TextTrimming.CharacterEllipsis;
         txtEstado.VerticalAlignment = VerticalAlignment.Center;
         barraEstado = new ProgressBar { Width = 180, Margin = new Thickness(16, 0, 0, 0), Visibility = Visibility.Collapsed, Maximum = 100 };
+        btnCancelar = new Button { Style = Ui.S("BotonEnlace"), Content = "Cancelar", Margin = new Thickness(16, 0, 0, 0), Visibility = Visibility.Collapsed, VerticalAlignment = VerticalAlignment.Center };
+        btnCancelar.Click += (s, e) => { cancelar = true; btnCancelar.IsEnabled = false; TextoEstado("Cancelando..."); };
         var estado = new DockPanel { Margin = new Thickness(32, 0, 32, 0) };
+        DockPanel.SetDock(btnCancelar, Dock.Right);
         DockPanel.SetDock(barraEstado, Dock.Right);
+        estado.Children.Add(btnCancelar);
         estado.Children.Add(barraEstado);
         estado.Children.Add(txtEstado);
         var barra = new Border
@@ -141,6 +148,14 @@ class VentanaPrincipal : Window
         if (mensaje != null) txtEstado.Text = mensaje;
     }
 
+    // Muestra el botón «Cancelar» durante las esperas y mediciones que se pueden interrumpir.
+    void Cancelable(bool si)
+    {
+        cancelar = false;
+        btnCancelar.IsEnabled = true;
+        btnCancelar.Visibility = si ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     public void Progreso(int valor)
     {
         if (valor < 0) { barraEstado.Visibility = Visibility.Collapsed; return; }
@@ -196,8 +211,7 @@ class VentanaPrincipal : Window
                               "Azul", "Medir ahora", "Ahora no") == 0)
                 {
                     Ir("analisis");
-                    await EsperarEstabilizacion();
-                    await MedirAsync(false);
+                    if (await EsperarEstabilizacion()) await MedirAsync(false);
                 }
             }
             return;
@@ -211,26 +225,37 @@ class VentanaPrincipal : Window
             Log("No se ha medido el estado original: ya hay servicios modificados. Restablece los cambios para poder medirlo.");
             return;
         }
+        Estado est = Almacen.LeerEstado();
+        if (est.OmitirMedicionInicial) return;
+        int r = Preguntar("Primera ejecución", "Se recomienda medir ahora el rendimiento del equipo (" + Pagina<PaginaAnalisis>("analisis").Duracion +
+                          " s) para poder compararlo después de optimizar.\n\nPuedes medirlo más adelante desde la sección Análisis.",
+                          "Azul", "Medir ahora", "Ahora no", "No volver a preguntar");
+        if (r == 2) { est.OmitirMedicionInicial = true; Almacen.GuardarEstado(est); }
+        if (r != 0) return;
         Ir("analisis");
         Log("Primera ejecución: midiendo el rendimiento actual (ANTES).");
-        await EsperarEstabilizacion();
-        await MedirAsync(true);
+        if (await EsperarEstabilizacion()) await MedirAsync(true);
     }
 
     // Justo después de arrancar, Windows sigue cargando cosas en segundo plano;
     // medir en ese momento daría resultados peores de lo real.
-    async Task EsperarEstabilizacion()
+    // Devuelve false si el usuario cancela la espera.
+    async Task<bool> EsperarEstabilizacion()
     {
         const int minimo = 120;
-        if (Sistema.SegundosEncendido >= minimo) return;
+        if (Sistema.SegundosEncendido >= minimo) return true;
         Ocupado(true, null);
+        Cancelable(true);
         int restante;
-        while ((restante = minimo - (int)Sistema.SegundosEncendido) > 0)
+        while ((restante = minimo - (int)Sistema.SegundosEncendido) > 0 && !cancelar)
         {
             TextoEstado("El equipo acaba de iniciarse. Esperando " + restante + " s a que se estabilice antes de medir...");
             await Task.Delay(1000);
         }
-        Ocupado(false, "");
+        bool seguir = !cancelar;
+        Cancelable(false);
+        Ocupado(false, seguir ? "" : "Medición cancelada.");
+        return seguir;
     }
 
     public async Task<bool> MedirAsync(bool antes)
@@ -239,10 +264,18 @@ class VentanaPrincipal : Window
         Ocupado(true, "Midiendo durante " + segundos + " s... no uses el equipo mientras tanto.");
         Progreso(0);
         var progreso = new Progress<int>(Progreso);
+        Cancelable(true);
         bool ok = true;
         try
         {
-            Medicion m = await Task.Run(() => Medidor.Medir(segundos, progreso));
+            Medicion m = await Task.Run(() => Medidor.Medir(segundos, progreso, () => cancelar));
+            if (m == null)
+            {
+                Cancelable(false);
+                Progreso(-1);
+                Ocupado(false, "Medición cancelada.");
+                return false;
+            }
             Mediciones meds = Almacen.LeerMediciones();
             if (antes)
             {
@@ -259,6 +292,7 @@ class VentanaPrincipal : Window
             Ocupado(false, "Error en la medición.");
             Preguntar("Error en la medición", ex.Message, "Rojo");
         }
+        Cancelable(false);
         Progreso(-1);
         Pagina<PaginaAnalisis>("analisis").Refrescar();
         return ok;
@@ -272,7 +306,7 @@ class VentanaPrincipal : Window
 
         Ocupado(true, mensaje);
         await Task.Run(trabajo);
-        Almacen.GuardarEstado(new Estado { UltimoCambio = DateTime.Now.ToString("o") });
+        Almacen.MarcarCambio();
         bool programada = await Task.Run(() => Sistema.ProgramarApertura(Log));
         Ocupado(false, "Cambios aplicados. Reinicia el equipo para que tengan efecto completo.");
 

@@ -231,6 +231,7 @@ public class Mediciones
 public class Estado
 {
     public string UltimoCambio { get; set; }     // fecha ISO del último desactivar/restablecer
+    public bool OmitirMedicionInicial { get; set; }   // el usuario no quiere la medición de la primera ejecución
 
     public static DateTime? Fecha(string iso)
     {
@@ -297,6 +298,14 @@ static class Almacen
         }
         catch { }
         return new Estado();
+    }
+
+    // Anota la fecha del último cambio conservando el resto del estado.
+    public static void MarcarCambio()
+    {
+        Estado e = LeerEstado();
+        e.UltimoCambio = DateTime.Now.ToString("o");
+        GuardarEstado(e);
     }
 
     public static void GuardarEstado(Estado e)
@@ -561,7 +570,8 @@ static class Medidor
         return max;
     }
 
-    public static Medicion Medir(int segundos, IProgress<int> progreso)
+    // Devuelve null si se cancela.
+    public static Medicion Medir(int segundos, IProgress<int> progreso, Func<bool> cancelar = null)
     {
         var m = new Medicion { Fecha = DateTime.Now.ToString(FormatoFecha), FechaIso = DateTime.Now.ToString("o"), DuracionSeg = segundos };
 
@@ -576,6 +586,7 @@ static class Medidor
         while (reloj.Elapsed.TotalSeconds < segundos)
         {
             Thread.Sleep(1000);
+            if (cancelar != null && cancelar()) return null;
 
             var mem = new MEMORYSTATUSEX();
             GlobalMemoryStatusEx(mem);
