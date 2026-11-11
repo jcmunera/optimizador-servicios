@@ -196,9 +196,10 @@ class VentanaPrincipal : Window
             if (Sistema.Arranque < cambio.Value)
             {
                 // Cambios aplicados pero sin reiniciar: la tarea de apertura sigue programada.
-                if (Preguntar("Reinicio pendiente", "Hay cambios aplicados que todavía no tienen efecto completo porque el equipo no se ha reiniciado.",
-                              "Amarillo", "Reiniciar ahora", "Más tarde") == 0)
-                    Sistema.Reiniciar();
+                // No se pregunta al abrir, porque el usuario puede querer seguir aplicando cambios
+                // (por ejemplo, con el modo perfil): el reinicio se propone al terminar cada operación
+                // y el Panel lo recuerda.
+                TextoEstado("Hay cambios pendientes de reinicio. Se propondrá reiniciar al terminar las acciones.");
                 return;
             }
 
